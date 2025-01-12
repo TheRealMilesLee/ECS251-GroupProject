@@ -9,8 +9,8 @@ in multi-thread, which is way faster than the multi-process approach and more
 resource efficient.
 
 ## Dependencies
-This project is built by clang. So make sure you have your latest clang installed'
-before start to build this project
+This project is built by clang. So make sure you have your latest clang installed
+before start to build this project.
 
 ## Installation
 Using the following commands to clone this repository.
