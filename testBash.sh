@@ -2,7 +2,7 @@
 
 my_array=()
 
-for i in {1..32767}; do
+for i in {1..32768}; do
   my_array+=($RANDOM)
 done
 
