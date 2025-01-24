@@ -18,6 +18,9 @@ public:
   void parallel_execute_sort(std::vector<int> &v);      // Zhuosheng
   void parallel_execute_array_sum(std::vector<int> &v); // Jason
   void parallel_execute_array_search(std::vector<int> &v, int key); // Hengyi
+  void search_function(size_t start, size_t end, std::mutex &mtx,
+                       std::atomic<int> &foundIndex,
+                       const std::vector<int> &v); // 新增
 };
 
 void parallel_execute::parallel_execute_matrix_multiplication(
@@ -53,19 +56,8 @@ void parallel_execute::parallel_execute_array_search(std::vector<int> &v,
     size_t start = i * chunkSize;
     size_t end = (i == numThreads - 1) ? v.size() : start + chunkSize;
 
-    threads.emplace_back(
-        [&, start, end]()
-        {
-          for (size_t index = start; index < end && foundIndex == -1; ++index)
-          {
-            if (v[index] != -1)
-            {
-              std::lock_guard<std::mutex> lock(mtx);
-              foundIndex = index;
-              break;
-            }
-          }
-        });
+    threads.emplace_back(&parallel_execute::search_function, this, start, end,
+                         std::ref(mtx), std::ref(foundIndex), std::ref(v));
   }
 
   for (auto &thread : threads)
@@ -81,5 +73,21 @@ void parallel_execute::parallel_execute_array_search(std::vector<int> &v,
   {
     std::cout << "Found key " << key << " at index " << foundIndex
               << std::endl;
+  }
+}
+
+void parallel_execute::search_function(size_t start, size_t end,
+                                       std::mutex &mtx,
+                                       std::atomic<int> &foundIndex,
+                                       const std::vector<int> &v)
+{
+  for (size_t index = start; index < end && foundIndex == -1; ++index)
+  {
+    if (v[index] != -1)
+    {
+      std::lock_guard<std::mutex> lock(mtx);
+      foundIndex = index;
+      break;
+    }
   }
 }
