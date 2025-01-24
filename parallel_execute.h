@@ -38,7 +38,7 @@ void parallel_execute::parallel_execute_array_search(std::vector<int> &v,
   // 获取硬件支持的线程数量
   unsigned int numThreads = std::thread::hardware_concurrency();
   if (numThreads == 0)
-    numThreads = 4; // 默认值
+    numThreads = 8; // 默认值
 
   // 计算每个线程处理的区间大小
   size_t chunkSize = v.size() / numThreads;
@@ -56,7 +56,7 @@ void parallel_execute::parallel_execute_array_search(std::vector<int> &v,
         {
           for (size_t index = start; index < end && foundIndex == -1; ++index)
           {
-            if (v[index] == key)
+            if (searchIndex(key, index, v) != -1)
             {
               std::lock_guard<std::mutex> lock(mtx);
               foundIndex = index;
