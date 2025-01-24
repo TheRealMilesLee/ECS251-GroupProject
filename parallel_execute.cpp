@@ -23,13 +23,48 @@ int main(int argc, char *argv[])
     vector<vector<int>> matrix2;
     vector<vector<int>> result;
     int num_threads = atoi(argv[4]);
+    
+    // Start timing
+    auto start_time = std::chrono::high_resolution_clock::now();
+    
     pe.parallel_execute_matrix_multiplication(matrix1, matrix2, result);
+    
+    // End timing
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+    cout << "Matrix multiplication time: " << duration.count() << " microseconds" << endl;
   }
   else if (job_name == "sort")
   {
-    vector<int> v; // Deserialize argv[2] to vector v
-    int num_threads = atoi(argv[3]);
-    pe.parallel_execute_sort(v);
+    vector<int> v;
+    // Create a random vector of integers
+    srand(time(0)); // Seed the random number generator
+    const int size = 1000; // 1 million elements
+    for (int i = 0; i < size; i++) {
+      v.push_back(rand() % 10000); // Random numbers between 0 and 9999
+    }
+    
+    int num_threads = atoi(argv[2]);
+    unsigned int hw_threads = std::thread::hardware_concurrency();
+    cout << "Hardware supports " << hw_threads << " concurrent threads" << endl;
+    cout << "Sorting " << size << " elements using " << num_threads << " threads..." << endl;
+    
+    // Print first few elements before sorting
+    cout << "First 10 elements before sorting:" << endl;
+    for (int i = 0; i < min(10, size); i++) {
+      cout << v[i] << " ";
+    }
+    cout << endl;
+    
+    // Start timing
+    auto start_time = std::chrono::high_resolution_clock::now();
+    
+    pe.parallel_execute_sort(v, num_threads);
+    
+    // End timing
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+    cout << "Sorting time: " << duration.count() << " microseconds" << endl;
   }
   else if (job_name == "array_sum")
   {
@@ -47,9 +82,18 @@ int main(int argc, char *argv[])
       v.push_back(rand());
     }
     int key = 10240;
-    // 随机选个位置,将key放入
+    // Insert key at a random position
     v[rand() % 327680000] = key;
+    
+    // Start timing
+    auto start_time = std::chrono::high_resolution_clock::now();
+    
     pe.parallel_execute_array_search(v, key);
+    
+    // End timing
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+    cout << "Array search time: " << duration.count() << " microseconds" << endl;
   }
   else
   {
