@@ -74,12 +74,11 @@ int main(int argc, char *argv[])
   }
   else if (job_name == "array_search")
   {
-    vector<int> v; // Deserialize argv[2] to vector v
-    // Create a random vector of integers
-    srand(time(0)); // Seed the random number generator
-    for (size_t i = 0; i < 327680000; i++)
+    int searchNum = atoi(argv[2]);
+    vector<int> v;
+    for (int index = 2; index < argc; index++)
     {
-      v.push_back(rand());
+      v.push_back(atoi(argv[index]));
     }
     int key = 10240;
     // Insert key at a random position
@@ -94,6 +93,9 @@ int main(int argc, char *argv[])
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
     cout << "Array search time: " << duration.count() << " microseconds" << endl;
+    cout << "v.size() = " << v.size() << endl;
+    cout << "Index 0: " << v[0] << endl;
+    pe.parallel_execute_array_search(v, searchNum);
   }
   else
   {
