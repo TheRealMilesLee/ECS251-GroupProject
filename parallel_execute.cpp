@@ -40,8 +40,15 @@ int main(int argc, char *argv[])
   else if (job_name == "array_search")
   {
     vector<int> v; // Deserialize argv[2] to vector v
-    int key = atoi(argv[3]);
-    int num_threads = atoi(argv[4]);
+    // Create a random vector of integers
+    srand(time(0)); // Seed the random number generator
+    for (size_t i = 0; i < 327680000; i++)
+    {
+      v.push_back(rand());
+    }
+    int key = 10240;
+    // 随机选个位置,将key放入
+    v[rand() % 327680000] = key;
     pe.parallel_execute_array_search(v, key);
   }
   else
