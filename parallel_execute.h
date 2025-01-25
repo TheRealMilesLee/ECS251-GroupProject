@@ -22,16 +22,18 @@ public:
   void parallel_execute_array_search(std::vector<int> &v, int key); // Hengyi
   void search_function(size_t start, size_t end, std::mutex &mtx,
                        std::atomic<int> &foundIndex,
-                       const std::vector<int> &v, int key); // 修改
+                       const std::vector<int> &v, int key);
+  void merge_function(std::vector<int> &v,
+                      std::vector<std::vector<int>> &sortedChunks);
 };
 
 void parallel_execute::parallel_execute_sort(std::vector<int> &v,
                                              int num_threads)
 {
   if (v.empty())
+  {
     return;
-
-  // 修改: 确保num_threads大于0
+  }
   if (num_threads <= 0)
   {
     num_threads = 1;
@@ -45,8 +47,6 @@ void parallel_execute::parallel_execute_sort(std::vector<int> &v,
 
   // Create a copy of the input vector to avoid data races
   std::vector<int> input_copy = v;
-
-  // 修改: 根据实际线程数调整sortedChunks大小
   size_t actual_threads =
       std::min(static_cast<size_t>(num_threads), v.size());
   std::vector<std::vector<int>> sortedChunks(actual_threads);
@@ -76,46 +76,7 @@ void parallel_execute::parallel_execute_sort(std::vector<int> &v,
   // Merge sorted chunks
   v.clear();
   v.reserve(input_copy.size());
-
-  // Priority queue for merging
-  using HeapElement =
-      std::pair<int, std::pair<size_t, size_t>>; // (value, (chunk_index,
-                                                 // position))
-  std::vector<HeapElement> heap;
-
-  // Initialize heap with first element from each chunk
-  for (size_t i = 0; i < sortedChunks.size(); ++i)
-  {
-    if (!sortedChunks[i].empty())
-    {
-      heap.emplace_back(sortedChunks[i][0], std::make_pair(i, 0));
-    }
-  }
-
-  // Create min-heap
-  auto comp = [](const HeapElement &a, const HeapElement &b)
-  { return a.first > b.first; };
-  std::make_heap(heap.begin(), heap.end(), comp);
-
-  // Merge using min-heap
-  while (!heap.empty())
-  {
-    std::pop_heap(heap.begin(), heap.end(), comp);
-    auto current = heap.back();
-    heap.pop_back();
-
-    v.push_back(current.first);
-
-    size_t chunk_idx = current.second.first;
-    size_t pos = current.second.second;
-
-    if (pos + 1 < sortedChunks[chunk_idx].size())
-    {
-      heap.emplace_back(sortedChunks[chunk_idx][pos + 1],
-                        std::make_pair(chunk_idx, pos + 1));
-      std::push_heap(heap.begin(), heap.end(), comp);
-    }
-  }
+  merge_function(v, sortedChunks);
 }
 
 void parallel_execute::parallel_execute_matrix_multiplication(
@@ -185,6 +146,50 @@ void parallel_execute::search_function(size_t start, size_t end,
       std::lock_guard<std::mutex> lock(mtx);
       foundIndex = index;
       break;
+    }
+  }
+}
+
+void parallel_execute::merge_function(
+    std::vector<int> &v, std::vector<std::vector<int>> &sortedChunks)
+{
+  // Priority queue for merging
+  using HeapElement =
+      std::pair<int, std::pair<size_t, size_t>>; // (value, (chunk_index,
+                                                 // position))
+  std::vector<HeapElement> heap;
+
+  // Initialize heap with first element from each chunk
+  for (size_t i = 0; i < sortedChunks.size(); ++i)
+  {
+    if (!sortedChunks[i].empty())
+    {
+      heap.emplace_back(sortedChunks[i][0], std::make_pair(i, 0));
+    }
+  }
+
+  // Create min-heap
+  auto comp = [](const HeapElement &a, const HeapElement &b)
+  { return a.first > b.first; };
+  std::make_heap(heap.begin(), heap.end(), comp);
+
+  // Merge using min-heap
+  while (!heap.empty())
+  {
+    std::pop_heap(heap.begin(), heap.end(), comp);
+    auto current = heap.back();
+    heap.pop_back();
+
+    v.push_back(current.first);
+
+    size_t chunk_idx = current.second.first;
+    size_t pos = current.second.second;
+
+    if (pos + 1 < sortedChunks[chunk_idx].size())
+    {
+      heap.emplace_back(sortedChunks[chunk_idx][pos + 1],
+                        std::make_pair(chunk_idx, pos + 1));
+      std::push_heap(heap.begin(), heap.end(), comp);
     }
   }
 }
