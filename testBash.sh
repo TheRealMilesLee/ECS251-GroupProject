@@ -11,4 +11,4 @@ random_index=$((RANDOM % 32768))
 my_array=("${my_array[@]:0:$random_index}" 10240 "${my_array[@]:$random_index}")
 
 # parallel_execute array_search 10240 "${my_array[@]}"
-parallel_execute sort "${my_array[@]}"
+parallel_execute sort 8 "${my_array[@]}"

@@ -38,29 +38,20 @@ int main(int argc, char *argv[])
   }
   else if (job_name == "sort")
   {
+    int num_threads = atoi(argv[2]);
+    cout << argv[0] << " " << argv[1] << " " << argv[2] << " " << argv[3]
+         << endl;
     vector<int> v;
-    // Create a random vector of integers
-    srand(time(0));        // Seed the random number generator
-    const int size = 1000; // 1 million elements
-    for (int i = 0; i < size; i++)
+    for (int index = 3; index < argc; index++)
     {
-      v.push_back(rand() % 10000); // Random numbers between 0 and 9999
+      v.push_back(atoi(argv[index]));
     }
 
-    int num_threads = atoi(argv[2]);
     unsigned int hw_threads = std::thread::hardware_concurrency();
     cout << "Hardware supports " << hw_threads << " concurrent threads"
          << endl;
-    cout << "Sorting " << size << " elements using " << num_threads
+    cout << "Sorting " << v.size() << " elements using " << num_threads
          << " threads..." << endl;
-
-    // Print first few elements before sorting
-    cout << "First 10 elements before sorting:" << endl;
-    for (int i = 0; i < min(10, size); i++)
-    {
-      cout << v[i] << " ";
-    }
-    cout << endl;
 
     // Start timing
     auto start_time = std::chrono::high_resolution_clock::now();

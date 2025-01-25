@@ -31,6 +31,12 @@ void parallel_execute::parallel_execute_sort(std::vector<int> &v,
   if (v.empty())
     return;
 
+  // 修改: 确保num_threads大于0
+  if (num_threads <= 0)
+  {
+    num_threads = 1;
+  }
+
   // Calculate chunk size
   size_t chunkSize = (v.size() + num_threads - 1) / num_threads;
 
@@ -40,11 +46,13 @@ void parallel_execute::parallel_execute_sort(std::vector<int> &v,
   // Create a copy of the input vector to avoid data races
   std::vector<int> input_copy = v;
 
-  // Vector to store sorted chunks
-  std::vector<std::vector<int>> sortedChunks(num_threads);
+  // 修改: 根据实际线程数调整sortedChunks大小
+  size_t actual_threads =
+      std::min(static_cast<size_t>(num_threads), v.size());
+  std::vector<std::vector<int>> sortedChunks(actual_threads);
 
   // Sort chunks in parallel
-  for (int i = 0; i < num_threads; ++i)
+  for (int i = 0; i < actual_threads; ++i)
   {
     size_t start = i * chunkSize;
     size_t end = std::min(start + chunkSize, input_copy.size());
