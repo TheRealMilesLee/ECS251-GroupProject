@@ -1,6 +1,7 @@
-#include "parallel_execute.h"
 #include <iostream>
 #include <string>
+
+#include "parallel_execute.h"
 
 using namespace std;
 
@@ -18,7 +19,6 @@ int main(int argc, char *argv[])
   string job_name = argv[1];
   if (job_name == "matrix_multiply")
   {
-
     vector<vector<int>> matrix1;
     vector<vector<int>> matrix2;
     vector<vector<int>> result;
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
   }
   else if (job_name == "array_sum")
   {
-    vector<int> v; // Deserialize argv[2] to vector v
+    vector<int> v;  // Deserialize argv[2] to vector v
     int num_threads = atoi(argv[3]);
     pe.parallel_execute_array_sum(v);
   }
