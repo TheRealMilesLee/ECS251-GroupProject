@@ -13,7 +13,7 @@ using namespace std;
  */
 int matrix_multiplication(vector<vector<int>> &matrix1,
                           vector<vector<int>> &matrix2,
-                          vector<vector<int>> &result);
+                          vector<vector<int>> &result, size_t blockSize);
 
 int main()
 {
@@ -40,7 +40,7 @@ int main()
   // Start timing
   auto start_time = std::chrono::high_resolution_clock::now();
 
-  matrix_multiplication(v, v2, v3);
+  matrix_multiplication(v, v2, v3, 128);
   // End timing
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
@@ -54,9 +54,8 @@ int main()
 
 int matrix_multiplication(vector<vector<int>> &matrix1,
                           vector<vector<int>> &matrix2,
-                          vector<vector<int>> &result)
+                          vector<vector<int>> &result, size_t blockSize)
 {
-  size_t blockSize = 64;
   size_t n = matrix1.size();
 
   for (size_t ii = 0; ii < n; ii += blockSize)
