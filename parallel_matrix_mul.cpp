@@ -93,18 +93,21 @@ int main()
     }
   }
 
-  // Start the timer
-  auto start = chrono::high_resolution_clock::now();
+  // Start timing
+  auto start_time = std::chrono::high_resolution_clock::now();
 
   // Now pass these blocks to the parallel_computing function
   parallel_computing(src1, src2, dst, block_size);
 
-  // Stop the timer
-  auto stop = chrono::high_resolution_clock::now();
-  auto duration = chrono::duration_cast<chrono::seconds>(stop - start);
+  // End timing
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
+      end_time - start_time);
 
-  double seconds = static_cast<double>(duration.count());
-  cout << "Time taken by function: " << seconds << " seconds" << endl;
+  double seconds = static_cast<double>(duration.count()) / 1000000.0;
+
+  cout << "Matrix multiplication time: " << seconds << " seconds or "
+       << duration.count() % 1000000 << " microseconds" << endl;
 }
 
 void matrix_mul(vector<vector<int>> &src1, vector<vector<int>> &src2,
