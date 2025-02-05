@@ -15,9 +15,11 @@ mv gmon.out Results/gmon_parallel_matrix_mul.out
 
 # Start the perf record for the matrix_mul_single, record every possible thing save the data in perf-single.data
 perf record -o Results/perf-single.data -a -g -e cycles,instructions,cache-references,cache-misses,branch-instructions,branch-misses,context-switches,cpu-migrations,faults,task-clock -- ./matrix_mul_single
+mv gmon.out Results/gmon_matrix_mul.out
 
 # Start the perf record for the matrix_multiply_parallel, record every possible thing save the data in perf-parallel.data
 perf record -o Results/perf-parallel.data -a -g -e cycles,instructions,cache-references,cache-misses,branch-instructions,branch-misses,context-switches,cpu-migrations,faults,task-clock -- ./matrix_multiply_parallel
+mv gmon.out Results/gmon_parallel_matrix_mul.out
 
 # Generate the report for the matrix_mul_single
 perf report -i Results/perf-single.data --stdio >Results/perfReport_single_$timestamp.txt
