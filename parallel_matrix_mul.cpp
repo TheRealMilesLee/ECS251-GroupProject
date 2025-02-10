@@ -6,7 +6,7 @@
 #include "parallel_matrix_mul.h"
 using namespace std;
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
   // Default values
   size_t matrix_size = 4096;
@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
   if (argc > 2) block_size = static_cast<size_t>(atoi(argv[2]));
 
   MatrixBenchMark matrixBenchMark;
-  
+
   // Initialize random number generator
   random_device rd;
   mt19937 gen(rd());
@@ -29,19 +29,24 @@ int main(int argc, char* argv[])
   vector<vector<int>> dst(matrix_size, vector<int>(matrix_size, 0));
 
   // Fill matrices with random values
-  for (auto &row : src1) {
-    for (int &val : row) {
+  for (auto &row : src1)
+  {
+    for (int &val : row)
+    {
       val = dist(gen);
     }
   }
-  for (auto &row : src2) {
-    for (int &val : row) {
+  for (auto &row : src2)
+  {
+    for (int &val : row)
+    {
       val = dist(gen);
     }
   }
 
   cout << "Starting matrix multiplication benchmark...\n";
-  cout << "Matrix size: " << matrix_size << "x" << matrix_size << ", Block size: " << block_size << "\n";
+  cout << "Matrix size: " << matrix_size << "x" << matrix_size
+       << ", Block size: " << block_size << "\n";
   cout << "=========================================================\n";
 
   // Test async implementation
@@ -51,10 +56,12 @@ int main(int argc, char* argv[])
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
       end_time - start_time);
   double seconds = static_cast<double>(duration.count()) / 1000000.0;
-  cout << "Async implementation time: " << seconds << " seconds (" << duration.count() << " microseconds)\n";
+  cout << "Async implementation time: " << seconds << " seconds ("
+       << duration.count() << " microseconds)\n";
 
   // Clear dst for next testing
-  for (auto &row : dst) {
+  for (auto &row : dst)
+  {
     fill(row.begin(), row.end(), 0);
   }
 
@@ -65,10 +72,12 @@ int main(int argc, char* argv[])
   duration = std::chrono::duration_cast<std::chrono::microseconds>(
       end_time - start_time);
   seconds = static_cast<double>(duration.count()) / 1000000.0;
-  cout << "FIFO implementation time: " << seconds << " seconds (" << duration.count() << " microseconds)\n";
+  cout << "FIFO implementation time: " << seconds << " seconds ("
+       << duration.count() << " microseconds)\n";
 
   // Clear dst for next testing
-  for (auto &row : dst) {
+  for (auto &row : dst)
+  {
     fill(row.begin(), row.end(), 0);
   }
 
@@ -79,10 +88,12 @@ int main(int argc, char* argv[])
   duration = std::chrono::duration_cast<std::chrono::microseconds>(
       end_time - start_time);
   seconds = static_cast<double>(duration.count()) / 1000000.0;
-  cout << "LIFO implementation time: " << seconds << " seconds (" << duration.count() << " microseconds)\n";
+  cout << "LIFO implementation time: " << seconds << " seconds ("
+       << duration.count() << " microseconds)\n";
 
   // Clear dst for next testing
-  for (auto &row : dst) {
+  for (auto &row : dst)
+  {
     fill(row.begin(), row.end(), 0);
   }
 
@@ -93,10 +104,12 @@ int main(int argc, char* argv[])
   duration = std::chrono::duration_cast<std::chrono::microseconds>(
       end_time - start_time);
   seconds = static_cast<double>(duration.count()) / 1000000.0;
-  cout << "PPL implementation time: " << seconds << " seconds (" << duration.count() << " microseconds)\n";
+  cout << "PPL implementation time: " << seconds << " seconds ("
+       << duration.count() << " microseconds)\n";
 
   // Clear dst for next testing
-  for (auto &row : dst) {
+  for (auto &row : dst)
+  {
     fill(row.begin(), row.end(), 0);
   }
 
@@ -107,7 +120,8 @@ int main(int argc, char* argv[])
   duration = std::chrono::duration_cast<std::chrono::microseconds>(
       end_time - start_time);
   seconds = static_cast<double>(duration.count()) / 1000000.0;
-  cout << "TBB implementation time: " << seconds << " seconds (" << duration.count() << " microseconds)\n";
+  cout << "TBB implementation time: " << seconds << " seconds ("
+       << duration.count() << " microseconds)\n";
 
   cout << "=========================================================\n";
   return 0;
