@@ -292,48 +292,6 @@ void MatrixBenchMark::parallel_computing_ppl(vector<vector<int>> &src1,
                                              vector<vector<int>> &dst,
                                              size_t blockSize)
 {
-  // Get the number of available threads
-  size_t num_threads = thread::hardware_concurrency();
-
-  // Create a task group for parallel execution
-  vector<thread> threads;
-  mutex task_mutex;
-  atomic<size_t> next_block{ 0 };
-
-  // Worker function
-  auto worker = [&]()
-  {
-    while (true)
-    {
-      size_t block;
-      {
-        lock_guard<mutex> lock(task_mutex);
-        block = next_block++;
-        if (block >= src1.size())
-        {
-          break;
-        }
-      }
-      matrix_mul(src1,
-                 src2,
-                 dst,
-                 blockSize,
-                 block,
-                 min(block + blockSize, src1.size()));
-    }
-  };
-
-  // Launch worker threads
-  for (size_t i = 0; i < num_threads; ++i)
-  {
-    threads.emplace_back(worker);
-  }
-
-  // Wait for all threads to complete
-  for (auto &thread : threads)
-  {
-    thread.join();
-  }
 }
 
 void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
@@ -343,46 +301,6 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
 {
   // Get the number of available threads
   size_t num_threads = thread::hardware_concurrency();
-
-  // Create a thread pool
-  vector<thread> threads;
-  mutex task_mutex;
-  atomic<size_t> next_block{ 0 };
-
-  // Worker function
-  auto worker = [&]()
-  {
-    while (true)
-    {
-      size_t block;
-      {
-        lock_guard<mutex> lock(task_mutex);
-        block = next_block++;
-        if (block >= src1.size())
-        {
-          break;
-        }
-      }
-      matrix_mul(src1,
-                 src2,
-                 dst,
-                 blockSize,
-                 block,
-                 min(block + blockSize, src1.size()));
-    }
-  };
-
-  // Launch worker threads
-  for (size_t i = 0; i < num_threads; ++i)
-  {
-    threads.emplace_back(worker);
-  }
-
-  // Wait for all threads to complete
-  for (auto &thread : threads)
-  {
-    thread.join();
-  }
 }
 
 #endif // PARALLEL_MATRIX_MUL_H
