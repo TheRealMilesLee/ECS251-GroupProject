@@ -245,22 +245,30 @@ void MatrixBenchMark::parallel_computing_ppl(vector<vector<int>> &src1,
                                              vector<vector<int>> &dst,
                                              size_t blockSize)
 {
-}
-
-void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
-                                             vector<vector<int>> &src2,
-                                             vector<vector<int>> &dst,
-                                             size_t blockSize)
-{
+#ifdef _WIN32
   // Get the number of available threads
   size_t num_threads = thread::hardware_concurrency();
   
-  // Create a thread pool
+  // Create a task group for parallel execution
+  concurrency::task_group tasks;
+  
+  // Create tasks for each block
+  for (size_t i = 0; i < src1.size(); i += blockSize) {
+    tasks.run([&, i]() {
+      matrix_mul(src1, src2, dst, blockSize, i,
+                min(i + blockSize, src1.size()));
+    });
+  }
+  
+  // Wait for all tasks to complete
+  tasks.wait();
+#else
+  // Fallback to TBB-like implementation for non-Windows platforms
+  size_t num_threads = thread::hardware_concurrency();
   vector<thread> threads;
   mutex task_mutex;
   atomic<size_t> next_block{0};
   
-  // Worker function
   auto worker = [&]() {
     while (true) {
       size_t block;
@@ -276,15 +284,52 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
     }
   };
   
-  // Launch worker threads
   for (size_t i = 0; i < num_threads; ++i) {
     threads.emplace_back(worker);
   }
   
-  // Wait for all threads to complete
   for (auto &thread : threads) {
     thread.join();
   }
+#endif
+}
+
+void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
+                                             vector<vector<int>> &src2,
+                                             vector<vector<int>> &dst,
+                                             size_t blockSize)
+{
+#ifdef USE_TBB
+  // Use TBB's parallel_for with blocked_range
+  tbb::parallel_for(tbb::blocked_range<size_t>(0, src1.size(), blockSize),
+    [&](const tbb::blocked_range<size_t>& range) {
+      matrix_mul(src1, src2, dst, blockSize, range.begin(), range.end());
+    });
+#else
+  // Fallback to standard thread pool implementation
+  size_t num_threads = thread::hardware_concurrency();
+  vector<thread> threads;
+  atomic<size_t> next_block{0};
+  
+  auto worker = [&]() {
+    while (true) {
+      size_t block = next_block.fetch_add(blockSize);
+      if (block >= src1.size()) {
+        break;
+      }
+      matrix_mul(src1, src2, dst, blockSize, block,
+                min(block + blockSize, src1.size()));
+    }
+  };
+  
+  for (size_t i = 0; i < num_threads; ++i) {
+    threads.emplace_back(worker);
+  }
+  
+  for (auto &thread : threads) {
+    thread.join();
+  }
+#endif
 }
 
 void MatrixBenchMark::single_thread_computing(vector<vector<int>> &src1,
