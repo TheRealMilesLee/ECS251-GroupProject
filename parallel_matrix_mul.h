@@ -7,18 +7,18 @@
 #include <stack>
 #include <mutex>
 
-using std::vector;
-using std::thread;
-using std::future;
 using std::async;
+using std::atomic;
+using std::future;
 using std::launch;
+using std::lock_guard;
+using std::min;
+using std::mutex;
+using std::pair;
 using std::queue;
 using std::stack;
-using std::mutex;
-using std::lock_guard;
-using std::pair;
-using std::min;
-using std::atomic;
+using std::thread;
+using std::vector;
 
 class MatrixBenchMark
 {
@@ -26,37 +26,39 @@ public:
   void matrix_mul(std::vector<std::vector<int>> &matrix1,
                   std::vector<std::vector<int>> &matrix2,
                   std::vector<std::vector<int>> &result,
-                  size_t block_size, size_t start, size_t end);
+                  size_t block_size,
+                  size_t start,
+                  size_t end);
 
   void parallel_computing_async(std::vector<std::vector<int>> &matrix1,
+                                std::vector<std::vector<int>> &matrix2,
+                                std::vector<std::vector<int>> &result,
+                                size_t block_size);
+
+  void single_thread_computing(std::vector<std::vector<int>> &matrix1,
+                               std::vector<std::vector<int>> &matrix2,
+                               std::vector<std::vector<int>> &result,
+                               size_t block_size);
+
+  void parallel_computing_fifo(std::vector<std::vector<int>> &matrix1,
+                               std::vector<std::vector<int>> &matrix2,
+                               std::vector<std::vector<int>> &result,
+                               size_t block_size);
+
+  void parallel_computing_lifo(std::vector<std::vector<int>> &matrix1,
+                               std::vector<std::vector<int>> &matrix2,
+                               std::vector<std::vector<int>> &result,
+                               size_t block_size);
+
+  void parallel_computing_ppl(std::vector<std::vector<int>> &matrix1,
                               std::vector<std::vector<int>> &matrix2,
                               std::vector<std::vector<int>> &result,
                               size_t block_size);
 
-  void single_thread_computing(std::vector<std::vector<int>> &matrix1,
-                             std::vector<std::vector<int>> &matrix2,
-                             std::vector<std::vector<int>> &result,
-                             size_t block_size);
-
-  void parallel_computing_fifo(std::vector<std::vector<int>> &matrix1,
-                             std::vector<std::vector<int>> &matrix2,
-                             std::vector<std::vector<int>> &result,
-                             size_t block_size);
-
-  void parallel_computing_lifo(std::vector<std::vector<int>> &matrix1,
-                             std::vector<std::vector<int>> &matrix2,
-                             std::vector<std::vector<int>> &result,
-                             size_t block_size);
-
-  void parallel_computing_ppl(std::vector<std::vector<int>> &matrix1,
-                            std::vector<std::vector<int>> &matrix2,
-                            std::vector<std::vector<int>> &result,
-                            size_t block_size);
-
   void parallel_computing_tbb(std::vector<std::vector<int>> &matrix1,
-                            std::vector<std::vector<int>> &matrix2,
-                            std::vector<std::vector<int>> &result,
-                            size_t block_size);
+                              std::vector<std::vector<int>> &matrix2,
+                              std::vector<std::vector<int>> &result,
+                              size_t block_size);
 };
 
 void MatrixBenchMark::matrix_mul(vector<vector<int>> &src1,
@@ -254,47 +256,18 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
 {
   // Get the number of available threads
   size_t num_threads = thread::hardware_concurrency();
-  
-  // Create a thread pool
-  vector<thread> threads;
-  mutex task_mutex;
-  atomic<size_t> next_block{0};
-  
-  // Worker function
-  auto worker = [&]() {
-    while (true) {
-      size_t block;
-      {
-        lock_guard<mutex> lock(task_mutex);
-        block = next_block++;
-        if (block >= src1.size()) {
-          break;
-        }
-      }
-      matrix_mul(src1, src2, dst, blockSize, block,
-                min(block + blockSize, src1.size()));
-    }
-  };
-  
-  // Launch worker threads
-  for (size_t i = 0; i < num_threads; ++i) {
-    threads.emplace_back(worker);
-  }
-  
-  // Wait for all threads to complete
-  for (auto &thread : threads) {
-    thread.join();
-  }
 }
 
 void MatrixBenchMark::single_thread_computing(vector<vector<int>> &src1,
-                                            vector<vector<int>> &src2,
-                                            vector<vector<int>> &dst,
-                                            size_t blockSize)
+                                              vector<vector<int>> &src2,
+                                              vector<vector<int>> &dst,
+                                              size_t blockSize)
 {
   // Process blocks sequentially
-  for (size_t i = 0; i < src1.size(); i += blockSize) {
-    matrix_mul(src1, src2, dst, blockSize, i, min(i + blockSize, src1.size()));
+  for (size_t i = 0; i < src1.size(); i += blockSize)
+  {
+    matrix_mul(
+        src1, src2, dst, blockSize, i, min(i + blockSize, src1.size()));
   }
 }
 
