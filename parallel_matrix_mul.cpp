@@ -47,6 +47,7 @@ int main(int argc, char* argv[]) {
 
   MatrixBenchMark matrixBenchMark;
 
+
   // Initialize random number generator
   random_device rd;
   mt19937 gen(rd());

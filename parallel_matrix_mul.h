@@ -61,8 +61,10 @@ public:
 
 void MatrixBenchMark::matrix_mul(vector<vector<int>> &src1,
                                  vector<vector<int>> &src2,
-                                 vector<vector<int>> &dst, size_t blockSize,
-                                 size_t start, size_t end)
+                                 vector<vector<int>> &dst,
+                                 size_t blockSize,
+                                 size_t start,
+                                 size_t end)
 {
   // Perform matrix multiplication for the given block range
   for (size_t iblock = start; iblock < end; iblock += blockSize)
@@ -95,34 +97,39 @@ void MatrixBenchMark::parallel_computing_async(vector<vector<int>> &src1,
 {
   // Get the number of available threads
   size_t num_threads = thread::hardware_concurrency();
-  
+
   // Calculate the total number of blocks
   size_t total_blocks = (src1.size() + blockSize - 1) / blockSize;
-  
+
   // Vector to store futures
   vector<future<void>> futures;
-  
+
   // Create tasks for each block
-  for (size_t i = 0; i < src1.size(); i += blockSize) {
+  for (size_t i = 0; i < src1.size(); i += blockSize)
+  {
     // Launch async task for each block
-    futures.push_back(
-      async(launch::async,
-            [this, &src1, &src2, &dst, blockSize, i]() {
-              this->matrix_mul(src1, src2, dst, blockSize, i,
-                              min(i + blockSize, src1.size()));
-            }));
-    
+    futures.push_back(async(
+        launch::async,
+        [this, &src1, &src2, &dst, blockSize, i]()
+        {
+          this->matrix_mul(
+              src1, src2, dst, blockSize, i, min(i + blockSize, src1.size()));
+        }));
+
     // If we have launched as many tasks as threads, wait for some to complete
-    if (futures.size() >= num_threads) {
-      for (auto &f : futures) {
+    if (futures.size() >= num_threads)
+    {
+      for (auto &f : futures)
+      {
         f.get();
       }
       futures.clear();
     }
   }
-  
+
   // Wait for remaining tasks to complete
-  for (auto &f : futures) {
+  for (auto &f : futures)
+  {
     f.get();
   }
 }
@@ -134,26 +141,30 @@ void MatrixBenchMark::parallel_computing_fifo(vector<vector<int>> &src1,
 {
   // Get the number of available threads
   size_t num_threads = thread::hardware_concurrency();
-  
+
   // Create a queue for tasks
   queue<pair<size_t, size_t>> task_queue;
-  
+
   // Fill the queue with tasks (blocks)
-  for (size_t i = 0; i < src1.size(); i += blockSize) {
-    task_queue.push({i, min(i + blockSize, src1.size())});
+  for (size_t i = 0; i < src1.size(); i += blockSize)
+  {
+    task_queue.push({ i, min(i + blockSize, src1.size()) });
   }
-  
+
   // Create worker threads
   vector<thread> threads;
   mutex queue_mutex;
-  
+
   // Worker function
-  auto worker = [&]() {
-    while (true) {
+  auto worker = [&]()
+  {
+    while (true)
+    {
       pair<size_t, size_t> task;
       {
         lock_guard<mutex> lock(queue_mutex);
-        if (task_queue.empty()) {
+        if (task_queue.empty())
+        {
           break;
         }
         task = task_queue.front();
@@ -162,14 +173,16 @@ void MatrixBenchMark::parallel_computing_fifo(vector<vector<int>> &src1,
       matrix_mul(src1, src2, dst, blockSize, task.first, task.second);
     }
   };
-  
+
   // Launch worker threads
-  for (size_t i = 0; i < num_threads; ++i) {
+  for (size_t i = 0; i < num_threads; ++i)
+  {
     threads.emplace_back(worker);
   }
-  
+
   // Wait for all threads to complete
-  for (auto &thread : threads) {
+  for (auto &thread : threads)
+  {
     thread.join();
   }
 }
@@ -181,26 +194,30 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
 {
   // Get the number of available threads
   size_t num_threads = thread::hardware_concurrency();
-  
+
   // Create a stack for tasks
   stack<pair<size_t, size_t>> task_stack;
-  
+
   // Fill the stack with tasks (blocks)
-  for (size_t i = 0; i < src1.size(); i += blockSize) {
-    task_stack.push({i, min(i + blockSize, src1.size())});
+  for (size_t i = 0; i < src1.size(); i += blockSize)
+  {
+    task_stack.push({ i, min(i + blockSize, src1.size()) });
   }
-  
+
   // Create worker threads
   vector<thread> threads;
   mutex stack_mutex;
-  
+
   // Worker function
-  auto worker = [&]() {
-    while (true) {
+  auto worker = [&]()
+  {
+    while (true)
+    {
       pair<size_t, size_t> task;
       {
         lock_guard<mutex> lock(stack_mutex);
-        if (task_stack.empty()) {
+        if (task_stack.empty())
+        {
           break;
         }
         task = task_stack.top();
@@ -209,14 +226,16 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
       matrix_mul(src1, src2, dst, blockSize, task.first, task.second);
     }
   };
-  
+
   // Launch worker threads
-  for (size_t i = 0; i < num_threads; ++i) {
+  for (size_t i = 0; i < num_threads; ++i)
+  {
     threads.emplace_back(worker);
   }
-  
+
   // Wait for all threads to complete
-  for (auto &thread : threads) {
+  for (auto &thread : threads)
+  {
     thread.join();
   }
 }
@@ -226,39 +245,6 @@ void MatrixBenchMark::parallel_computing_ppl(vector<vector<int>> &src1,
                                              vector<vector<int>> &dst,
                                              size_t blockSize)
 {
-  // Get the number of available threads
-  size_t num_threads = thread::hardware_concurrency();
-  
-  // Create a task group for parallel execution
-  vector<thread> threads;
-  mutex task_mutex;
-  atomic<size_t> next_block{0};
-  
-  // Worker function
-  auto worker = [&]() {
-    while (true) {
-      size_t block;
-      {
-        lock_guard<mutex> lock(task_mutex);
-        block = next_block++;
-        if (block >= src1.size()) {
-          break;
-        }
-      }
-      matrix_mul(src1, src2, dst, blockSize, block,
-                min(block + blockSize, src1.size()));
-    }
-  };
-  
-  // Launch worker threads
-  for (size_t i = 0; i < num_threads; ++i) {
-    threads.emplace_back(worker);
-  }
-  
-  // Wait for all threads to complete
-  for (auto &thread : threads) {
-    thread.join();
-  }
 }
 
 void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
