@@ -3,56 +3,60 @@
 #include <future>
 #include <thread>
 #include <vector>
-using namespace std;
+#include <queue>
+#include <stack>
+#include <mutex>
+
+using std::vector;
+using std::thread;
+using std::future;
+using std::async;
+using std::launch;
+using std::queue;
+using std::stack;
+using std::mutex;
+using std::lock_guard;
+using std::pair;
+using std::min;
+using std::atomic;
 
 class MatrixBenchMark
 {
-private:
-  vector<vector<int>> src1;
-  vector<vector<int>> src2;
-  vector<vector<int>> dst;
-  size_t blockSize;
-
 public:
-  void matrix_mul(vector<vector<int>> &src1, vector<vector<int>> &src2,
-                  vector<vector<int>> &dst, size_t blockSize, size_t start,
-                  size_t end);
+  void matrix_mul(std::vector<std::vector<int>> &matrix1,
+                  std::vector<std::vector<int>> &matrix2,
+                  std::vector<std::vector<int>> &result,
+                  size_t block_size, size_t start, size_t end);
 
-  /**
-   * @brief Performs parallel matrix multiplication asynchronously.
-   *
-   * This function multiplies two matrices (src1 and src2) and stores the
-   * result in the destination matrix (dst). The multiplication is performed
-   * in parallel using asynchronous tasks, with the computation divided into
-   * blocks of size blockSize.
-   *
-   * @param src1 The first source matrix.
-   * @param src2 The second source matrix.
-   * @param dst The destination matrix to store the result of the
-   * multiplication.
-   * @param blockSize The size of the blocks to divide the computation into
-   * for parallel processing.
-   */
-  void parallel_computing_async(vector<vector<int>> &src1,
-                                vector<vector<int>> &src2,
-                                vector<vector<int>> &dst, size_t blockSize);
+  void parallel_computing_async(std::vector<std::vector<int>> &matrix1,
+                              std::vector<std::vector<int>> &matrix2,
+                              std::vector<std::vector<int>> &result,
+                              size_t block_size);
 
-  // 预留其他多线程实现的函数声明
-  void parallel_computing_fifo(vector<vector<int>> &src1,
-                               vector<vector<int>> &src2,
-                               vector<vector<int>> &dst, size_t blockSize);
+  void single_thread_computing(std::vector<std::vector<int>> &matrix1,
+                             std::vector<std::vector<int>> &matrix2,
+                             std::vector<std::vector<int>> &result,
+                             size_t block_size);
 
-  void parallel_computing_lifo(vector<vector<int>> &src1,
-                               vector<vector<int>> &src2,
-                               vector<vector<int>> &dst, size_t blockSize);
+  void parallel_computing_fifo(std::vector<std::vector<int>> &matrix1,
+                             std::vector<std::vector<int>> &matrix2,
+                             std::vector<std::vector<int>> &result,
+                             size_t block_size);
 
-  void parallel_computing_ppl(vector<vector<int>> &src1,
-                              vector<vector<int>> &src2,
-                              vector<vector<int>> &dst, size_t blockSize);
+  void parallel_computing_lifo(std::vector<std::vector<int>> &matrix1,
+                             std::vector<std::vector<int>> &matrix2,
+                             std::vector<std::vector<int>> &result,
+                             size_t block_size);
 
-  void parallel_computing_tbb(vector<vector<int>> &src1,
-                              vector<vector<int>> &src2,
-                              vector<vector<int>> &dst, size_t blockSize);
+  void parallel_computing_ppl(std::vector<std::vector<int>> &matrix1,
+                            std::vector<std::vector<int>> &matrix2,
+                            std::vector<std::vector<int>> &result,
+                            size_t block_size);
+
+  void parallel_computing_tbb(std::vector<std::vector<int>> &matrix1,
+                            std::vector<std::vector<int>> &matrix2,
+                            std::vector<std::vector<int>> &result,
+                            size_t block_size);
 };
 
 void MatrixBenchMark::matrix_mul(vector<vector<int>> &src1,
@@ -294,6 +298,17 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
   // Wait for all threads to complete
   for (auto &thread : threads) {
     thread.join();
+  }
+}
+
+void MatrixBenchMark::single_thread_computing(vector<vector<int>> &src1,
+                                            vector<vector<int>> &src2,
+                                            vector<vector<int>> &dst,
+                                            size_t blockSize)
+{
+  // Process blocks sequentially
+  for (size_t i = 0; i < src1.size(); i += blockSize) {
+    matrix_mul(src1, src2, dst, blockSize, i, min(i + blockSize, src1.size()));
   }
 }
 
