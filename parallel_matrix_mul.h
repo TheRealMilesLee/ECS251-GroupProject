@@ -48,19 +48,6 @@ class MatrixBenchMark
                                 size_t block_size);
 
   /**
-   * @brief Multiplies two matrices using a single thread.
-   *
-   * @param matrix1 The first input matrix.
-   * @param matrix2 The second input matrix.
-   * @param result The resulting matrix after multiplication.
-   * @param block_size The size of the block to be used for multiplication.
-   */
-  void single_thread_computing(std::vector<std::vector<int>> &matrix1,
-                               std::vector<std::vector<int>> &matrix2,
-                               std::vector<std::vector<int>> &result,
-                               size_t block_size);
-
-  /**
    * @brief Multiplies two matrices in parallel using a FIFO (First In, First
    * Out) scheduling policy.
    *
