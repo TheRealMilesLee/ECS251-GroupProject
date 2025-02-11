@@ -13,7 +13,8 @@ using namespace std;
  */
 int matrix_multiplication(vector<vector<int>> &matrix1,
                           vector<vector<int>> &matrix2,
-                          vector<vector<int>> &result, size_t blockSize);
+                          vector<vector<int>> &result,
+                          size_t blockSize);
 
 int main()
 {
@@ -54,7 +55,8 @@ int main()
 
 int matrix_multiplication(vector<vector<int>> &matrix1,
                           vector<vector<int>> &matrix2,
-                          vector<vector<int>> &result, size_t blockSize)
+                          vector<vector<int>> &result,
+                          size_t blockSize)
 {
   size_t n = matrix1.size();
 
