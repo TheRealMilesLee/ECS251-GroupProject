@@ -26,9 +26,6 @@ perf stat ./matrix_mul_lifo 2>Results/perfStats_lifo_$timestamp.txt
 # Start the perf stat for the matrix_mul_tbb
 perf stat ./matrix_mul_tbb 2>Results/perfStats_tbb_$timestamp.txt
 
-# Start the perf stat for the matrix_mul_ppl
-perf stat ./matrix_mul_ppl 2>Results/perfStats_ppl_$timestamp.txt
-
 # clean the files
 make clean
 
