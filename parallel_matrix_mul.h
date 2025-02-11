@@ -6,6 +6,8 @@
 #include <queue>
 #include <stack>
 #include <mutex>
+#include <tbb/tbb.h>
+#include <tbb/parallel_for.h>
 
 using std::async;
 using std::atomic;
