@@ -89,20 +89,6 @@ class MatrixBenchMark
                                size_t block_size);
 
   /**
-   * @brief Multiplies two matrices in parallel using the Parallel Patterns
-   * Library (PPL).
-   *
-   * @param matrix1 The first input matrix.
-   * @param matrix2 The second input matrix.
-   * @param result The resulting matrix after multiplication.
-   * @param block_size The size of the block to be used for multiplication.
-   */
-  void parallel_computing_ppl(std::vector<std::vector<int>> &matrix1,
-                              std::vector<std::vector<int>> &matrix2,
-                              std::vector<std::vector<int>> &result,
-                              size_t block_size);
-
-  /**
    * @brief Multiplies two matrices in parallel using Intel Threading Building
    * Blocks (TBB).
    *
@@ -209,31 +195,7 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
 {
 }
 
-void MatrixBenchMark::parallel_computing_ppl(vector<vector<int>> &src1,
-                                             vector<vector<int>> &src2,
-                                             vector<vector<int>> &dst,
-                                             size_t blockSize)
-{
-#ifdef _WIN32
-  // Get the number of available threads
-  size_t num_threads = thread::hardware_concurrency();
 
-  // Create a task group for parallel execution
-  concurrency::task_group tasks;
-
-  // Create tasks for each block
-  for (size_t i = 0; i < src1.size(); i += blockSize)
-  {
-    tasks.run([&, i]() {
-      matrix_mul(src1, src2, dst, blockSize, i,
-                 min(i + blockSize, src1.size()));
-    });
-  }
-
-  // Wait for all tasks to complete
-  tasks.wait();
-#endif
-}
 
 void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
                                              vector<vector<int>> &src2,
