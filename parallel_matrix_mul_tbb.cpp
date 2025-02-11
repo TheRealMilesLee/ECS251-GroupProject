@@ -1,22 +1,6 @@
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <random>
-#include <vector>
-
 #include "parallel_matrix_mul.h"
 using namespace std;
-
-// Function to clear destination matrix
-static void clear_matrix(vector<vector<int>> &dst)
-{
-  for (auto &row : dst)
-  {
-    fill(row.begin(), row.end(), 0);
-  }
-}
-
-int main(int argc, char *argv[])
+int main()
 {
   // Default values
   size_t matrix_size = 4096;
@@ -50,81 +34,16 @@ int main(int argc, char *argv[])
   }
 
   auto start_time = std::chrono::high_resolution_clock::now();
-  matrixBenchMark.parallel_computing_async(src1, src2, dst, block_size);
+  matrixBenchMark.parallel_computing_tbb(src1, src2, dst, block_size);
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
       end_time - start_time);
 
   double seconds = static_cast<double>(duration.count()) / 1000000.0;
 
-  cout << "Matrix multiplication time with async: " << seconds
-       << " seconds or " << duration.count() % 1000000 << " microseconds"
-       << endl;
-  clear_matrix(dst);
-
-  start_time = std::chrono::high_resolution_clock::now();
-  matrixBenchMark.parallel_computing_fifo(src1, src2, dst, block_size);
-  end_time = std::chrono::high_resolution_clock::now();
-  duration = std::chrono::duration_cast<std::chrono::microseconds>(
-      end_time - start_time);
-
-  seconds = static_cast<double>(duration.count()) / 1000000.0;
-
-  cout << "Matrix multiplication time with FIFO: " << seconds
-       << " seconds or " << duration.count() % 1000000 << " microseconds"
-       << endl;
-
-  // Clear dst for next testing
-  for (auto &row : dst)
-  {
-    fill(row.begin(), row.end(), 0);
-  }
-
-  start_time = std::chrono::high_resolution_clock::now();
-  matrixBenchMark.parallel_computing_lifo(src1, src2, dst, block_size);
-  end_time = std::chrono::high_resolution_clock::now();
-  duration = std::chrono::duration_cast<std::chrono::microseconds>(
-      end_time - start_time);
-
-  seconds = static_cast<double>(duration.count()) / 1000000.0;
-
-  cout << "Matrix multiplication time with LIFO: " << seconds
-       << " seconds or " << duration.count() % 1000000 << " microseconds"
-       << endl;
-
-  // Clear dst for next testing
-  for (auto &row : dst)
-  {
-    fill(row.begin(), row.end(), 0);
-  }
-
-  start_time = std::chrono::high_resolution_clock::now();
-  matrixBenchMark.parallel_computing_ppl(src1, src2, dst, block_size);
-  end_time = std::chrono::high_resolution_clock::now();
-  duration = std::chrono::duration_cast<std::chrono::microseconds>(
-      end_time - start_time);
-
-  seconds = static_cast<double>(duration.count()) / 1000000.0;
-
-  cout << "Matrix multiplication time with PPL: " << seconds << " seconds or "
-       << duration.count() % 1000000 << " microseconds" << endl;
-
-  // Clear dst for next testing
-  for (auto &row : dst)
-  {
-    fill(row.begin(), row.end(), 0);
-  }
-
-  start_time = std::chrono::high_resolution_clock::now();
-  matrixBenchMark.parallel_computing_tbb(src1, src2, dst, block_size);
-  end_time = std::chrono::high_resolution_clock::now();
-  duration = std::chrono::duration_cast<std::chrono::microseconds>(
-      end_time - start_time);
-
-  seconds = static_cast<double>(duration.count()) / 1000000.0;
-
   cout << "Matrix multiplication time with TBB: " << seconds << " seconds or "
        << duration.count() % 1000000 << " microseconds" << endl;
+  matrixBenchMark.clear_matrix(dst);
 
   return 0;
 }

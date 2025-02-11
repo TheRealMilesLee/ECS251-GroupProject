@@ -1,6 +1,9 @@
 #!/bin/bash
-
+rm -rf Results/
+rm -rf Results.7z
 make clean
+
+mkdir Results
 make
 
 timestamp=$(date +"%Y%m%d%H%M%S")
@@ -8,8 +11,8 @@ timestamp=$(date +"%Y%m%d%H%M%S")
 # Start the perf stat for the matrix_mul_single
 perf stat ./matrix_mul_single 2>Results/perfStats_single_$timestamp.txt
 
-# Start the perf stat for the matrix_multiply_parallel
-perf stat ./matrix_multiply_parallel 2>Results/perfStats_parallel_$timestamp.txt
+# Start the perf stat for the parallel_matrix_mul_standard
+perf stat ./parallel_matrix_mul_standard 2>Results/perfStats_parallel_standard_$timestamp.txt
 
 # Start the perf stat for the matrix_mul_async
 perf stat ./matrix_mul_async 2>Results/perfStats_async_$timestamp.txt

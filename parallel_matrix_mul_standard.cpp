@@ -1,7 +1,7 @@
 #include "parallel_matrix_mul.h"
 using namespace std;
 
-int main(int argc, char *argv[])
+int main()
 {
   // Default values
   size_t matrix_size = 4096;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
       end_time - start_time);
   double seconds = static_cast<double>(duration.count()) / 1000000.0;
 
-  cout << "Matrix multiplication time with async: " << seconds
+  cout << "Matrix multiplication time with normal parallel approach: " << seconds
        << " seconds or " << duration.count() % 1000000 << " microseconds"
        << endl;
   matrixBenchMark.clear_matrix(dst);

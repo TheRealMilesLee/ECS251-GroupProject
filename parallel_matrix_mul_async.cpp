@@ -1,7 +1,7 @@
 #include "parallel_matrix_mul.h"
 using namespace std;
 
-int main(int argc, char *argv[])
+int main()
 {
   // Default values
   size_t matrix_size = 4096;
