@@ -3,9 +3,13 @@
 #include <tbb/parallel_for.h>
 #include <tbb/tbb.h>
 
+#include <chrono>
 #include <future>
+#include <iomanip>
+#include <iostream>
 #include <mutex>
 #include <queue>
+#include <random>
 #include <stack>
 #include <thread>
 #include <vector>
@@ -111,6 +115,13 @@ class MatrixBenchMark
                               std::vector<std::vector<int>> &matrix2,
                               std::vector<std::vector<int>> &result,
                               size_t block_size);
+
+  void parallel_computing_simple_multithread(
+      std::vector<std::vector<int>> &matrix1,
+      std::vector<std::vector<int>> &matrix2,
+      std::vector<std::vector<int>> &result, size_t block_size);
+  // Function to clear destination matrix
+  void clear_matrix(vector<vector<int>> &dst);
 };
 
 void MatrixBenchMark::matrix_mul(vector<vector<int>> &src1,
@@ -189,8 +200,6 @@ void MatrixBenchMark::parallel_computing_fifo(vector<vector<int>> &src1,
                                               vector<vector<int>> &dst,
                                               size_t blockSize)
 {
-  // Get the number of available threads
-  size_t num_threads = thread::hardware_concurrency();
 }
 
 void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
@@ -198,8 +207,6 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
                                               vector<vector<int>> &dst,
                                               size_t blockSize)
 {
-  // Get the number of available threads
-  size_t num_threads = thread::hardware_concurrency();
 }
 
 void MatrixBenchMark::parallel_computing_ppl(vector<vector<int>> &src1,
@@ -241,17 +248,43 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
                     });
 }
 
-void MatrixBenchMark::single_thread_computing(vector<vector<int>> &src1,
-                                              vector<vector<int>> &src2,
-                                              vector<vector<int>> &dst,
-                                              size_t blockSize)
+void MatrixBenchMark::parallel_computing_simple_multithread(
+    std::vector<std::vector<int>> &matrix1,
+    std::vector<std::vector<int>> &matrix2,
+    std::vector<std::vector<int>> &result, size_t block_size)
 {
-  // Process blocks sequentially
-  for (size_t i = 0; i < src1.size(); i += blockSize)
+  // Get the number of available threads
+  size_t num_threads = thread::hardware_concurrency();
+
+  // Vector to store threads
+  vector<thread> threads;
+
+  // Create tasks for each block
+  for (size_t i = 0; i < matrix1.size(); i += block_size)
   {
-    matrix_mul(src1, src2, dst, blockSize, i,
-               min(i + blockSize, src1.size()));
+    // Launch a thread for each block
+    threads.push_back(
+        thread([this, &matrix1, &matrix2, &result, block_size, i]() {
+          this->matrix_mul(matrix1, matrix2, result, block_size, i,
+                           min(i + block_size, matrix1.size()));
+        }));
   }
+
+  // Wait for all threads to complete
+  for (auto &t : threads)
+  {
+    t.join();
+  }
+
+  // Clear the threads vector
+  threads.clear();
 }
 
+void MatrixBenchMark::clear_matrix(vector<vector<int>> &dst)
+{
+  for (auto &row : dst)
+  {
+    fill(row.begin(), row.end(), 0);
+  }
+}
 #endif  // PARALLEL_MATRIX_MUL_H

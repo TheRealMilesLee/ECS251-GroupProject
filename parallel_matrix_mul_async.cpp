@@ -35,11 +35,11 @@ int main(int argc, char *argv[])
   }
 
   auto start_time = std::chrono::high_resolution_clock::now();
-  matrixBenchMark.parallel_computing_simple_multithread(src1, src2, dst,
-                                                        block_size);
+  matrixBenchMark.parallel_computing_async(src1, src2, dst, block_size);
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
       end_time - start_time);
+
   double seconds = static_cast<double>(duration.count()) / 1000000.0;
 
   cout << "Matrix multiplication time with async: " << seconds
