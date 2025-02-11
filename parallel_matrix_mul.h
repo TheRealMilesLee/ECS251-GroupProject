@@ -266,7 +266,6 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
                                              vector<vector<int>> &dst,
                                              size_t blockSize)
 {
-#ifdef USE_TBB
   // Use TBB's parallel_for with blocked_range
   tbb::parallel_for(
       tbb::blocked_range<size_t>(0, src1.size(), blockSize),
@@ -274,7 +273,6 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
       {
         matrix_mul(src1, src2, dst, blockSize, range.begin(), range.end());
       });
-#endif
 }
 
 void MatrixBenchMark::single_thread_computing(vector<vector<int>> &src1,

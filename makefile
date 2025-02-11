@@ -1,5 +1,5 @@
 CXX = clang++
-CXXFLAGS = -Oz -pedantic-errors -Weverything -Wno-poison-system-directories -Wthread-safety -Wno-c++98-compat -std=c++23 -pthread
+CXXFLAGS = -Oz -pedantic-errors -Weverything -ltbb -Wno-poison-system-directories -Wthread-safety -Wno-c++98-compat -std=c++23 -pthread
 
 SRC = matrix_mul.cpp parallel_matrix_mul.cpp
 OBJ = $(SRC:.cpp=.o)
