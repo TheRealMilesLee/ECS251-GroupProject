@@ -1,78 +1,49 @@
-#include <algorithm>
-#include <chrono>
-#include <iostream>
-#include <vector>
+#include "parallel_matrix_mul.h"
 using namespace std;
-
-/**
- * This function is for the matrix multiplication in the default standards.
- * @param matrix1 The first matrix to be multiplied.
- * @param matrix2 The second matrix to be multiplied.
- * @param result The matrix that will store the result of the multiplication.
- * @return 0 if the multiplication is successful.
- */
-int matrix_multiplication(vector<vector<int>> &matrix1,
-                          vector<vector<int>> &matrix2,
-                          vector<vector<int>> &result, size_t blockSize);
-
 int main()
 {
-  vector<vector<int>> v(4096, vector<int>(4096));
-  for (size_t i = 0; i < 4096; i++)
+  // Default values
+  size_t matrix_size = 4096;
+  size_t block_size = 128;
+  MatrixBenchMark matrixBenchMark;
+
+  // Initialize matrices
+  vector<vector<int>> src1(matrix_size, vector<int>(matrix_size));
+  vector<vector<int>> src2(matrix_size, vector<int>(matrix_size));
+  vector<vector<int>> dst(matrix_size, vector<int>(matrix_size, 0));
+
+  for (size_t row = 0; row < matrix_size; row++)
   {
-    for (size_t j = 0; j < 4096; j++)
+    for (size_t col = 0; col < matrix_size; col++)
     {
-      v[i][j] = rand();
+      src1[row][col] = row + col;
+      src2[row][col] = row + col;
     }
   }
 
-  vector<vector<int>> v2(4096, vector<int>(4096));
-  for (size_t i = 0; i < 4096; i++)
-  {
-    for (size_t j = 0; j < 4096; j++)
-    {
-      v2[i][j] = rand();
-    }
-  }
-
-  vector<vector<int>> v3(4096, vector<int>(4096, 0));
-
-  // Start timing
   auto start_time = std::chrono::high_resolution_clock::now();
-
-  matrix_multiplication(v, v2, v3, 128);
-  // End timing
+  matrixBenchMark.single_thread_matrix_mul(src1, src2, dst, block_size);
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
       end_time - start_time);
 
   double seconds = static_cast<double>(duration.count()) / 1000000.0;
 
-  cout << "Matrix multiplication time: " << seconds << " seconds or "
-       << duration.count() % 1000000 << " microseconds" << endl;
-}
+  cout << "Matrix multiplication time with single thread: " << seconds
+       << " seconds or " << duration.count() % 1000000 << " microseconds"
+       << endl;
 
-int matrix_multiplication(vector<vector<int>> &matrix1,
-                          vector<vector<int>> &matrix2,
-                          vector<vector<int>> &result, size_t blockSize)
-{
-  size_t n = matrix1.size();
-
-  for (size_t ii = 0; ii < n; ii += blockSize)
+  FILE *f = fopen("matrix_mul_single.txt", "w");
+  for (size_t i = 0; i < dst.size(); i++)
   {
-    for (size_t kk = 0; kk < n; kk += blockSize)
+    for (size_t j = 0; j < dst[0].size(); j++)
     {
-      for (size_t j = 0; j < n; j++)
-      {
-        for (size_t i = ii; i < min(ii + blockSize, n); i++)
-        {
-          for (size_t k = kk; k < min(kk + blockSize, n); k++)
-          {
-            result[i][j] += matrix1[i][k] * matrix2[k][j];
-          }
-        }
-      }
+      fprintf(f, "%d ", dst[i][j]);
     }
+    fprintf(f, "\n");
   }
+  fclose(f);
+  matrixBenchMark.clear_matrix(dst);
+
   return 0;
 }
