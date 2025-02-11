@@ -1,109 +1,112 @@
 #ifndef PARALLEL_MATRIX_MUL_H
 #define PARALLEL_MATRIX_MUL_H
+#include <tbb/parallel_for.h>
+#include <tbb/tbb.h>
+
 #include <future>
-#include <thread>
-#include <vector>
+#include <mutex>
 #include <queue>
 #include <stack>
-#include <mutex>
-#include <tbb/tbb.h>
-#include <tbb/parallel_for.h>
+#include <thread>
+#include <vector>
 
 using namespace std;
 
 class MatrixBenchMark
 {
-public:
+ public:
   /**
- * @brief Multiplies two matrices using a specified block size and range.
- *
- * @param matrix1 The first input matrix.
- * @param matrix2 The second input matrix.
- * @param result The resulting matrix after multiplication.
- * @param block_size The size of the block to be used for multiplication.
- * @param start The starting index for the multiplication.
- * @param end The ending index for the multiplication.
- */
+   * @brief Multiplies two matrices using a specified block size and range.
+   *
+   * @param matrix1 The first input matrix.
+   * @param matrix2 The second input matrix.
+   * @param result The resulting matrix after multiplication.
+   * @param block_size The size of the block to be used for multiplication.
+   * @param start The starting index for the multiplication.
+   * @param end The ending index for the multiplication.
+   */
   void matrix_mul(std::vector<std::vector<int>> &matrix1,
                   std::vector<std::vector<int>> &matrix2,
-                  std::vector<std::vector<int>> &result,
-                  size_t block_size,
-                  size_t start,
-                  size_t end);
+                  std::vector<std::vector<int>> &result, size_t block_size,
+                  size_t start, size_t end);
 
   /**
- * @brief Multiplies two matrices in parallel using asynchronous tasks.
- *
- * @param matrix1 The first input matrix.
- * @param matrix2 The second input matrix.
- * @param result The resulting matrix after multiplication.
- * @param block_size The size of the block to be used for multiplication.
- */
+   * @brief Multiplies two matrices in parallel using asynchronous tasks.
+   *
+   * @param matrix1 The first input matrix.
+   * @param matrix2 The second input matrix.
+   * @param result The resulting matrix after multiplication.
+   * @param block_size The size of the block to be used for multiplication.
+   */
   void parallel_computing_async(std::vector<std::vector<int>> &matrix1,
                                 std::vector<std::vector<int>> &matrix2,
                                 std::vector<std::vector<int>> &result,
                                 size_t block_size);
 
   /**
- * @brief Multiplies two matrices using a single thread.
- *
- * @param matrix1 The first input matrix.
- * @param matrix2 The second input matrix.
- * @param result The resulting matrix after multiplication.
- * @param block_size The size of the block to be used for multiplication.
- */
+   * @brief Multiplies two matrices using a single thread.
+   *
+   * @param matrix1 The first input matrix.
+   * @param matrix2 The second input matrix.
+   * @param result The resulting matrix after multiplication.
+   * @param block_size The size of the block to be used for multiplication.
+   */
   void single_thread_computing(std::vector<std::vector<int>> &matrix1,
                                std::vector<std::vector<int>> &matrix2,
                                std::vector<std::vector<int>> &result,
                                size_t block_size);
 
   /**
- * @brief Multiplies two matrices in parallel using a FIFO (First In, First Out) scheduling policy.
- *
- * @param matrix1 The first input matrix.
- * @param matrix2 The second input matrix.
- * @param result The resulting matrix after multiplication.
- * @param block_size The size of the block to be used for multiplication.
- */
+   * @brief Multiplies two matrices in parallel using a FIFO (First In, First
+   * Out) scheduling policy.
+   *
+   * @param matrix1 The first input matrix.
+   * @param matrix2 The second input matrix.
+   * @param result The resulting matrix after multiplication.
+   * @param block_size The size of the block to be used for multiplication.
+   */
   void parallel_computing_fifo(std::vector<std::vector<int>> &matrix1,
                                std::vector<std::vector<int>> &matrix2,
                                std::vector<std::vector<int>> &result,
                                size_t block_size);
 
   /**
- * @brief Multiplies two matrices in parallel using a LIFO (Last In, First Out) scheduling policy.
- *
- * @param matrix1 The first input matrix.
- * @param matrix2 The second input matrix.
- * @param result The resulting matrix after multiplication.
- * @param block_size The size of the block to be used for multiplication.
- */
+   * @brief Multiplies two matrices in parallel using a LIFO (Last In, First
+   * Out) scheduling policy.
+   *
+   * @param matrix1 The first input matrix.
+   * @param matrix2 The second input matrix.
+   * @param result The resulting matrix after multiplication.
+   * @param block_size The size of the block to be used for multiplication.
+   */
   void parallel_computing_lifo(std::vector<std::vector<int>> &matrix1,
                                std::vector<std::vector<int>> &matrix2,
                                std::vector<std::vector<int>> &result,
                                size_t block_size);
 
   /**
- * @brief Multiplies two matrices in parallel using the Parallel Patterns Library (PPL).
- *
- * @param matrix1 The first input matrix.
- * @param matrix2 The second input matrix.
- * @param result The resulting matrix after multiplication.
- * @param block_size The size of the block to be used for multiplication.
- */
+   * @brief Multiplies two matrices in parallel using the Parallel Patterns
+   * Library (PPL).
+   *
+   * @param matrix1 The first input matrix.
+   * @param matrix2 The second input matrix.
+   * @param result The resulting matrix after multiplication.
+   * @param block_size The size of the block to be used for multiplication.
+   */
   void parallel_computing_ppl(std::vector<std::vector<int>> &matrix1,
                               std::vector<std::vector<int>> &matrix2,
                               std::vector<std::vector<int>> &result,
                               size_t block_size);
 
   /**
- * @brief Multiplies two matrices in parallel using Intel Threading Building Blocks (TBB).
- *
- * @param matrix1 The first input matrix.
- * @param matrix2 The second input matrix.
- * @param result The resulting matrix after multiplication.
- * @param block_size The size of the block to be used for multiplication.
- */
+   * @brief Multiplies two matrices in parallel using Intel Threading Building
+   * Blocks (TBB).
+   *
+   * @param matrix1 The first input matrix.
+   * @param matrix2 The second input matrix.
+   * @param result The resulting matrix after multiplication.
+   * @param block_size The size of the block to be used for multiplication.
+   */
   void parallel_computing_tbb(std::vector<std::vector<int>> &matrix1,
                               std::vector<std::vector<int>> &matrix2,
                               std::vector<std::vector<int>> &result,
@@ -112,10 +115,8 @@ public:
 
 void MatrixBenchMark::matrix_mul(vector<vector<int>> &src1,
                                  vector<vector<int>> &src2,
-                                 vector<vector<int>> &dst,
-                                 size_t blockSize,
-                                 size_t start,
-                                 size_t end)
+                                 vector<vector<int>> &dst, size_t blockSize,
+                                 size_t start, size_t end)
 {
   // Perform matrix multiplication for the given block range
   for (size_t iblock = start; iblock < end; iblock += blockSize)
@@ -159,12 +160,10 @@ void MatrixBenchMark::parallel_computing_async(vector<vector<int>> &src1,
   for (size_t i = 0; i < src1.size(); i += blockSize)
   {
     // Launch async task for each block
-    futures.push_back(async(
-        launch::async,
-        [this, &src1, &src2, &dst, blockSize, i]()
-        {
-          this->matrix_mul(
-              src1, src2, dst, blockSize, i, min(i + blockSize, src1.size()));
+    futures.push_back(
+        async(launch::async, [this, &src1, &src2, &dst, blockSize, i]() {
+          this->matrix_mul(src1, src2, dst, blockSize, i,
+                           min(i + blockSize, src1.size()));
         }));
 
     // If we have launched as many tasks as threads, wait for some to complete
@@ -218,12 +217,10 @@ void MatrixBenchMark::parallel_computing_ppl(vector<vector<int>> &src1,
   // Create tasks for each block
   for (size_t i = 0; i < src1.size(); i += blockSize)
   {
-    tasks.run(
-        [&, i]()
-        {
-          matrix_mul(
-              src1, src2, dst, blockSize, i, min(i + blockSize, src1.size()));
-        });
+    tasks.run([&, i]() {
+      matrix_mul(src1, src2, dst, blockSize, i,
+                 min(i + blockSize, src1.size()));
+    });
   }
 
   // Wait for all tasks to complete
@@ -237,12 +234,11 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
                                              size_t blockSize)
 {
   // Use TBB's parallel_for with blocked_range
-  tbb::parallel_for(
-      tbb::blocked_range<size_t>(0, src1.size(), blockSize),
-      [&](const tbb::blocked_range<size_t> &range)
-      {
-        matrix_mul(src1, src2, dst, blockSize, range.begin(), range.end());
-      });
+  tbb::parallel_for(tbb::blocked_range<size_t>(0, src1.size(), blockSize),
+                    [&](const tbb::blocked_range<size_t> &range) {
+                      matrix_mul(src1, src2, dst, blockSize, range.begin(),
+                                 range.end());
+                    });
 }
 
 void MatrixBenchMark::single_thread_computing(vector<vector<int>> &src1,
@@ -253,9 +249,9 @@ void MatrixBenchMark::single_thread_computing(vector<vector<int>> &src1,
   // Process blocks sequentially
   for (size_t i = 0; i < src1.size(); i += blockSize)
   {
-    matrix_mul(
-        src1, src2, dst, blockSize, i, min(i + blockSize, src1.size()));
+    matrix_mul(src1, src2, dst, blockSize, i,
+               min(i + blockSize, src1.size()));
   }
 }
 
-#endif // PARALLEL_MATRIX_MUL_H
+#endif  // PARALLEL_MATRIX_MUL_H

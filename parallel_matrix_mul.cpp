@@ -1,33 +1,30 @@
 #include <chrono>
+#include <functional>
 #include <iomanip>
 #include <iostream>
 #include <random>
 #include <vector>
-#include <functional>
 
 #include "parallel_matrix_mul.h"
 using namespace std;
 
 // Function to clear destination matrix
-static void clear_matrix(vector<vector<int>>& dst)
+static void clear_matrix(vector<vector<int>> &dst)
 {
-  for (auto& row : dst)
+  for (auto &row : dst)
   {
     fill(row.begin(), row.end(), 0);
   }
 }
 
 // Function to run and time a matrix multiplication method
-double run_benchmark(const string& method_name,
-                     function<void(vector<vector<int>>&,
-                                   vector<vector<int>>&,
-                                   vector<vector<int>>&,
-                                   size_t)> method,
-                     MatrixBenchMark& benchmark,
-                     vector<vector<int>>& src1,
-                     vector<vector<int>>& src2,
-                     vector<vector<int>>& dst,
-                     size_t block_size)
+double run_benchmark(
+    const string &method_name,
+    function<void(vector<vector<int>> &, vector<vector<int>> &,
+                  vector<vector<int>> &, size_t)>
+        method,
+    MatrixBenchMark &benchmark, vector<vector<int>> &src1,
+    vector<vector<int>> &src2, vector<vector<int>> &dst, size_t block_size)
 {
   auto start_time = chrono::high_resolution_clock::now();
   method(src1, src2, dst, block_size);
@@ -44,15 +41,21 @@ double run_benchmark(const string& method_name,
   return seconds;
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
   // Default values
-  size_t matrix_size = 512; // Increased from 256
-  size_t block_size = 32; // Increased from 16
+  size_t matrix_size = 512;  // Increased from 256
+  size_t block_size = 32;    // Increased from 16
 
   // Parse command line arguments
-  if (argc > 1) matrix_size = static_cast<size_t>(atoi(argv[1]));
-  if (argc > 2) block_size = static_cast<size_t>(atoi(argv[2]));
+  if (argc > 1)
+  {
+    matrix_size = static_cast<size_t>(atoi(argv[1]));
+  }
+  if (argc > 2)
+  {
+    block_size = static_cast<size_t>(atoi(argv[2]));
+  }
 
   MatrixBenchMark matrixBenchMark;
 
@@ -67,16 +70,16 @@ int main(int argc, char* argv[])
   vector<vector<int>> dst(matrix_size, vector<int>(matrix_size, 0));
 
   // Fill matrices with random values
-  for (auto& row : src1)
+  for (auto &row : src1)
   {
-    for (int& val : row)
+    for (int &val : row)
     {
       val = dist(gen);
     }
   }
-  for (auto& row : src2)
+  for (auto &row : src2)
   {
-    for (int& val : row)
+    for (int &val : row)
     {
       val = dist(gen);
     }
@@ -93,82 +96,58 @@ int main(int argc, char* argv[])
 
   // Run benchmarks for each implementation
   results.push_back(
-      { "Single Thread",
-        run_benchmark(
-            "Single Thread",
-            [&](auto& s1, auto& s2, auto& d, auto b)
-            { matrixBenchMark.single_thread_computing(s1, s2, d, b); },
-            matrixBenchMark,
-            src1,
-            src2,
-            dst,
-            block_size) });
+      {"Single Thread", run_benchmark(
+                            "Single Thread",
+                            [&](auto &s1, auto &s2, auto &d, auto b) {
+                              matrixBenchMark.single_thread_computing(s1, s2,
+                                                                      d, b);
+                            },
+                            matrixBenchMark, src1, src2, dst, block_size)});
 
   results.push_back(
-      { "Async",
-        run_benchmark(
-            "Async",
-            [&](auto& s1, auto& s2, auto& d, auto b)
-            { matrixBenchMark.parallel_computing_async(s1, s2, d, b); },
-            matrixBenchMark,
-            src1,
-            src2,
-            dst,
-            block_size) });
+      {"Async", run_benchmark(
+                    "Async",
+                    [&](auto &s1, auto &s2, auto &d, auto b) {
+                      matrixBenchMark.parallel_computing_async(s1, s2, d, b);
+                    },
+                    matrixBenchMark, src1, src2, dst, block_size)});
 
   results.push_back(
-      { "FIFO",
-        run_benchmark(
-            "FIFO",
-            [&](auto& s1, auto& s2, auto& d, auto b)
-            { matrixBenchMark.parallel_computing_fifo(s1, s2, d, b); },
-            matrixBenchMark,
-            src1,
-            src2,
-            dst,
-            block_size) });
+      {"FIFO", run_benchmark(
+                   "FIFO",
+                   [&](auto &s1, auto &s2, auto &d, auto b) {
+                     matrixBenchMark.parallel_computing_fifo(s1, s2, d, b);
+                   },
+                   matrixBenchMark, src1, src2, dst, block_size)});
 
   results.push_back(
-      { "LIFO",
-        run_benchmark(
-            "LIFO",
-            [&](auto& s1, auto& s2, auto& d, auto b)
-            { matrixBenchMark.parallel_computing_lifo(s1, s2, d, b); },
-            matrixBenchMark,
-            src1,
-            src2,
-            dst,
-            block_size) });
+      {"LIFO", run_benchmark(
+                   "LIFO",
+                   [&](auto &s1, auto &s2, auto &d, auto b) {
+                     matrixBenchMark.parallel_computing_lifo(s1, s2, d, b);
+                   },
+                   matrixBenchMark, src1, src2, dst, block_size)});
 
   results.push_back(
-      { "PPL",
-        run_benchmark(
-            "PPL",
-            [&](auto& s1, auto& s2, auto& d, auto b)
-            { matrixBenchMark.parallel_computing_ppl(s1, s2, d, b); },
-            matrixBenchMark,
-            src1,
-            src2,
-            dst,
-            block_size) });
+      {"PPL", run_benchmark(
+                  "PPL",
+                  [&](auto &s1, auto &s2, auto &d, auto b) {
+                    matrixBenchMark.parallel_computing_ppl(s1, s2, d, b);
+                  },
+                  matrixBenchMark, src1, src2, dst, block_size)});
 
   results.push_back(
-      { "TBB",
-        run_benchmark(
-            "TBB",
-            [&](auto& s1, auto& s2, auto& d, auto b)
-            { matrixBenchMark.parallel_computing_tbb(s1, s2, d, b); },
-            matrixBenchMark,
-            src1,
-            src2,
-            dst,
-            block_size) });
+      {"TBB", run_benchmark(
+                  "TBB",
+                  [&](auto &s1, auto &s2, auto &d, auto b) {
+                    matrixBenchMark.parallel_computing_tbb(s1, s2, d, b);
+                  },
+                  matrixBenchMark, src1, src2, dst, block_size)});
 
   // Find the fastest implementation
-  auto fastest = min_element(results.begin(),
-                             results.end(),
-                             [](const auto& a, const auto& b)
-                             { return a.second < b.second; });
+  auto fastest = min_element(
+      results.begin(), results.end(),
+      [](const auto &a, const auto &b) { return a.second < b.second; });
 
   cout << string(80, '-') << endl;
   cout << "Fastest implementation: " << fastest->first << " (" << fixed
