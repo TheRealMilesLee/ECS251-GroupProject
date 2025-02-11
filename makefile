@@ -14,19 +14,19 @@ matrix_mul_single: matrix_mul.o
 matrix_multiply_parallel: parallel_matrix_mul.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-parallel_matrix_mul_async: parallel_matrix_mul_async.o
+matrix_mul_async: parallel_matrix_mul_async.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-parallel_matrix_mul_fifo: parallel_matrix_mul_fifo.o
+matrix_mul_fifo: parallel_matrix_mul_fifo.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-parallel_matrix_mul_lifo: parallel_matrix_mul_lifo.o
+matrix_mul_lifo: parallel_matrix_mul_lifo.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-parallel_matrix_mul_tbb: parallel_matrix_mul_tbb.o
+matrix_mul_tbb: parallel_matrix_mul_tbb.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-parallel_matrix_mul_ppl: parallel_matrix_mul_ppl.o
+matrix_mul_ppl: parallel_matrix_mul_ppl.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 %.o: %.cpp
