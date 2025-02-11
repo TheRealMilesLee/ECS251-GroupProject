@@ -9,18 +9,7 @@
 #include <tbb/tbb.h>
 #include <tbb/parallel_for.h>
 
-using std::async;
-using std::atomic;
-using std::future;
-using std::launch;
-using std::lock_guard;
-using std::min;
-using std::mutex;
-using std::pair;
-using std::queue;
-using std::stack;
-using std::thread;
-using std::vector;
+using namespace std;
 
 class MatrixBenchMark
 {
