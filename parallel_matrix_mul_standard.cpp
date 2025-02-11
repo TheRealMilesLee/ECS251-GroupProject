@@ -17,8 +17,8 @@ int main()
   {
     for (size_t col = 0; col < matrix_size; col++)
     {
-      src1[row][col] = row + col;
-      src2[row][col] = row + col;
+      src1[row][col] = static_cast<int>(row) + static_cast<int>(col);
+      src2[row][col] = static_cast<int>(row) + static_cast<int>(col);
     }
   }
 
