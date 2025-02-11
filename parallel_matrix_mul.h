@@ -14,6 +14,16 @@ using namespace std;
 class MatrixBenchMark
 {
 public:
+  /**
+ * @brief Multiplies two matrices using a specified block size and range.
+ *
+ * @param matrix1 The first input matrix.
+ * @param matrix2 The second input matrix.
+ * @param result The resulting matrix after multiplication.
+ * @param block_size The size of the block to be used for multiplication.
+ * @param start The starting index for the multiplication.
+ * @param end The ending index for the multiplication.
+ */
   void matrix_mul(std::vector<std::vector<int>> &matrix1,
                   std::vector<std::vector<int>> &matrix2,
                   std::vector<std::vector<int>> &result,
@@ -21,31 +31,79 @@ public:
                   size_t start,
                   size_t end);
 
+  /**
+ * @brief Multiplies two matrices in parallel using asynchronous tasks.
+ *
+ * @param matrix1 The first input matrix.
+ * @param matrix2 The second input matrix.
+ * @param result The resulting matrix after multiplication.
+ * @param block_size The size of the block to be used for multiplication.
+ */
   void parallel_computing_async(std::vector<std::vector<int>> &matrix1,
                                 std::vector<std::vector<int>> &matrix2,
                                 std::vector<std::vector<int>> &result,
                                 size_t block_size);
 
+  /**
+ * @brief Multiplies two matrices using a single thread.
+ *
+ * @param matrix1 The first input matrix.
+ * @param matrix2 The second input matrix.
+ * @param result The resulting matrix after multiplication.
+ * @param block_size The size of the block to be used for multiplication.
+ */
   void single_thread_computing(std::vector<std::vector<int>> &matrix1,
                                std::vector<std::vector<int>> &matrix2,
                                std::vector<std::vector<int>> &result,
                                size_t block_size);
 
+  /**
+ * @brief Multiplies two matrices in parallel using a FIFO (First In, First Out) scheduling policy.
+ *
+ * @param matrix1 The first input matrix.
+ * @param matrix2 The second input matrix.
+ * @param result The resulting matrix after multiplication.
+ * @param block_size The size of the block to be used for multiplication.
+ */
   void parallel_computing_fifo(std::vector<std::vector<int>> &matrix1,
                                std::vector<std::vector<int>> &matrix2,
                                std::vector<std::vector<int>> &result,
                                size_t block_size);
 
+  /**
+ * @brief Multiplies two matrices in parallel using a LIFO (Last In, First Out) scheduling policy.
+ *
+ * @param matrix1 The first input matrix.
+ * @param matrix2 The second input matrix.
+ * @param result The resulting matrix after multiplication.
+ * @param block_size The size of the block to be used for multiplication.
+ */
   void parallel_computing_lifo(std::vector<std::vector<int>> &matrix1,
                                std::vector<std::vector<int>> &matrix2,
                                std::vector<std::vector<int>> &result,
                                size_t block_size);
 
+  /**
+ * @brief Multiplies two matrices in parallel using the Parallel Patterns Library (PPL).
+ *
+ * @param matrix1 The first input matrix.
+ * @param matrix2 The second input matrix.
+ * @param result The resulting matrix after multiplication.
+ * @param block_size The size of the block to be used for multiplication.
+ */
   void parallel_computing_ppl(std::vector<std::vector<int>> &matrix1,
                               std::vector<std::vector<int>> &matrix2,
                               std::vector<std::vector<int>> &result,
                               size_t block_size);
 
+  /**
+ * @brief Multiplies two matrices in parallel using Intel Threading Building Blocks (TBB).
+ *
+ * @param matrix1 The first input matrix.
+ * @param matrix2 The second input matrix.
+ * @param result The resulting matrix after multiplication.
+ * @param block_size The size of the block to be used for multiplication.
+ */
   void parallel_computing_tbb(std::vector<std::vector<int>> &matrix1,
                               std::vector<std::vector<int>> &matrix2,
                               std::vector<std::vector<int>> &result,
