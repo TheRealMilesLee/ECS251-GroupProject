@@ -192,7 +192,6 @@ void MatrixBenchMark::parallel_computing_fifo(vector<vector<int>> &src1,
 {
   // Get the number of available threads
   size_t num_threads = thread::hardware_concurrency();
-
 }
 
 void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
@@ -202,7 +201,6 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
 {
   // Get the number of available threads
   size_t num_threads = thread::hardware_concurrency();
-
 }
 
 void MatrixBenchMark::parallel_computing_ppl(vector<vector<int>> &src1,
