@@ -141,6 +141,19 @@ class MatrixBenchMark
                               size_t block_size);
 
   /**
+   * @brief Multiplies two matrices in parallel using openMP.
+   *
+   * @param matrix1 The first input matrix.
+   * @param matrix2 The second input matrix.
+   * @param result The resulting matrix after multiplication.
+   * @param block_size The size of the block to be used for multiplication.
+   */
+  void parallel_computing_openMP(std::vector<std::vector<int>> &matrix1,
+                              std::vector<std::vector<int>> &matrix2,
+                              std::vector<std::vector<int>> &result,
+                              size_t block_size);
+
+  /**
    * @brief This function is the simple multi-threaded version of the matrix
    * multiplication
    *
@@ -380,6 +393,36 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
                                  range.end());
                     });
 }
+
+void MatrixBenchMark::parallel_computing_openMP(vector<vector<int>> &src1,
+                                                vector<vector<int>> &src2,
+                                                vector<vector<int>> &dst,
+                                                size_t blockSize)
+{
+  #
+  for (size_t iblock = start; iblock < end; iblock += blockSize)
+  {
+    for (size_t kblock = 0; kblock < src2.size(); kblock += blockSize)
+    {
+      for (size_t jblock = 0; jblock < dst.size(); jblock += blockSize)
+      {
+        for (size_t i = iblock; i < min(iblock + blockSize, src1.size()); i++)
+        {
+          for (size_t k = kblock; k < min(kblock + blockSize, src2.size());
+               k++)
+          {
+            for (size_t j = jblock; j < min(jblock + blockSize, dst.size());
+                 j++)
+            {
+              dst[i][j] += src1[i][k] * src2[k][j];
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 
 void MatrixBenchMark::parallel_computing_simple_multithread(
     std::vector<std::vector<int>> &matrix1,
