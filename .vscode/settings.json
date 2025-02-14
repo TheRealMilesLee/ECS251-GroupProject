@@ -84,6 +84,7 @@
     "text_encoding": "cpp",
     "cinttypes": "cpp",
     "shared_mutex": "cpp",
-    "cfenv": "cpp"
+    "cfenv": "cpp",
+    "complex": "cpp"
   }
 }

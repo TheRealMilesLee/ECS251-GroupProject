@@ -18,20 +18,25 @@ using namespace std;
 
 class MatrixBenchMark
 {
+ private:
+  queue<function<void()>> task_queue;  // FIFO queue for tasks
+  stack<function<void()>> task_stack;  // LIFO stack for tasks
+  mutex task_mutex;                    // Mutex for tasks
+  condition_variable cond;  // Condition variable for synchronization
+  bool stop = false;        // Stop flag for thread pool
  public:
   /**
-   * @brief Multiplies two matrices using a specified block size and range.
+   * @brief This function is used to clear the matrix
    *
-   * @param matrix1 The first input matrix.
-   * @param matrix2 The second input matrix.
-   * @param result The resulting matrix after multiplication.
-   * @param block_size The size of the block to be used for multiplication.
-   * @param start The starting index for the multiplication.
-   * @param end The ending index for the multiplication.
+   * @param dst The matrix to be cleared
    */
-  void matrix_mul(std::vector<std::vector<int>> &matrix1,
-                  std::vector<std::vector<int>> &matrix2,
-                  std::vector<std::vector<int>> &result, size_t block_size,
+  template <typename T>
+  void clear_matrix(vector<vector<T>> &dst);
+
+  template <typename T>
+  void matrix_mul(std::vector<std::vector<T>> &matrix1,
+                  std::vector<std::vector<T>> &matrix2,
+                  std::vector<std::vector<T>> &result, size_t block_size,
                   size_t start, size_t end);
   /**
    * @brief Performs single-threaded matrix multiplication.
@@ -53,6 +58,23 @@ class MatrixBenchMark
                                 std::vector<std::vector<int>> &matrix2,
                                 std::vector<std::vector<int>> &result,
                                 size_t block_size);
+
+  /**
+   * @brief This is the double version of the single_thread_matrix_mul
+   *
+   * @param matrix1 The first input matrix.
+   * @param matrix2 The second input matrix.
+   * @param result The matrix to store the result of the multiplication.
+   * @param block_size The size of the block to be used for multiplication.
+   *
+   * @note The dimensions of the matrices must be compatible for
+   * multiplication. Specifically, the number of columns in matrix1 must be
+   * equal to the number of rows in matrix2.
+   */
+  void single_thread_matrix_mul_double(
+      std::vector<std::vector<double>> &matrix1,
+      std::vector<std::vector<double>> &matrix2,
+      std::vector<std::vector<double>> &result, size_t block_size);
   /**
    * @brief Multiplies two matrices in parallel using asynchronous tasks.
    *
@@ -118,27 +140,27 @@ class MatrixBenchMark
                               std::vector<std::vector<int>> &result,
                               size_t block_size);
 
+  /**
+   * @brief This function is the simple multi-threaded version of the matrix
+   * multiplication
+   *
+   * @param matrix1 The first input matrix.
+   * @param matrix2 The second input matrix.
+   * @param result The resulting matrix after multiplication.
+   * @param block_size The size of the block to be used for multiplication.
+   */
   void parallel_computing_simple_multithread(
       std::vector<std::vector<int>> &matrix1,
       std::vector<std::vector<int>> &matrix2,
       std::vector<std::vector<int>> &result, size_t block_size);
-  // Function to clear destination matrix
-  void clear_matrix(vector<vector<int>> &dst);
 
   bool matrix_validation(vector<vector<int>> src1, vector<vector<int>> src2,
                          vector<vector<int>> incoming_dst);
-
-  private:
-    queue<function<void()>> task_queue;  // FIFO queue for tasks
-    stack<function<void()>> task_stack;  // LIFO stack for tasks
-    mutex task_mutex;                    // Mutex for tasks
-    condition_variable cond;             // Condition variable for synchronization
-    bool stop = false;                   // Stop flag for thread pool
 };
-
-void MatrixBenchMark::matrix_mul(vector<vector<int>> &src1,
-                                 vector<vector<int>> &src2,
-                                 vector<vector<int>> &dst, size_t blockSize,
+template <typename T>
+void MatrixBenchMark::matrix_mul(vector<vector<T>> &src1,
+                                 vector<vector<T>> &src2,
+                                 vector<vector<T>> &dst, size_t blockSize,
                                  size_t start, size_t end)
 {
   // Perform matrix multiplication for the given block range using block ik
@@ -165,7 +187,6 @@ void MatrixBenchMark::matrix_mul(vector<vector<int>> &src1,
     }
   }
 }
-
 void MatrixBenchMark::parallel_computing_async(vector<vector<int>> &src1,
                                                vector<vector<int>> &src2,
                                                vector<vector<int>> &dst,
@@ -173,10 +194,6 @@ void MatrixBenchMark::parallel_computing_async(vector<vector<int>> &src1,
 {
   // Get the number of available threads
   size_t num_threads = thread::hardware_concurrency();
-
-  // Calculate the total number of blocks
-  size_t total_blocks = (src1.size() + blockSize - 1) / blockSize;
-
   // Vector to store futures
   vector<future<void>> futures;
 
@@ -209,56 +226,58 @@ void MatrixBenchMark::parallel_computing_async(vector<vector<int>> &src1,
 }
 
 // Worker functions for the thread pool implementations
-void MatrixBenchMark::worker_thread_fifo() {
-    while (true) {
-        function<void()> task;
-        {
-            unique_lock<mutex> lock(task_mutex);
+void MatrixBenchMark::worker_thread_fifo()
+{
+  while (true)
+  {
+    function<void()> task;
+    {
+      unique_lock<mutex> lock(task_mutex);
 
-            // Waiting until there is a task to
-            // execute or the pool is stopped
-            cond.wait(lock, [this] {
-                return !task_queue.empty() || stop;
-            });
+      // Waiting until there is a task to
+      // execute or the pool is stopped
+      cond.wait(lock, [this] { return !task_queue.empty() || stop; });
 
-            // exit the thread in case the pool
-            // is stopped and there are no tasks
-            if (stop && task_queue.empty()) {
-                return;
-            }
+      // exit the thread in case the pool
+      // is stopped and there are no tasks
+      if (stop && task_queue.empty())
+      {
+        return;
+      }
 
-            // Get the next task from the queue
-            task = std::move(task_queue.front());
-            task_queue.pop();
-        }
-        task();
+      // Get the next task from the queue
+      task = std::move(task_queue.front());
+      task_queue.pop();
     }
+    task();
+  }
 }
 
-void MatrixBenchMark::worker_thread_lifo() {
-    while (true) {
-        function<void()> task;
-        {
-            unique_lock<mutex> lock(task_mutex);
+void MatrixBenchMark::worker_thread_lifo()
+{
+  while (true)
+  {
+    function<void()> task;
+    {
+      unique_lock<mutex> lock(task_mutex);
 
-            // Waiting until there is a task to
-            // execute or the pool is stopped
-            cond.wait(lock, [this] {
-                return !task_stack.empty() || stop;
-            });
+      // Waiting until there is a task to
+      // execute or the pool is stopped
+      cond.wait(lock, [this] { return !task_stack.empty() || stop; });
 
-            // exit the thread in case the pool
-            // is stopped and there are no tasks
-            if (stop && task_stack.empty()) {
-                return;
-            }
+      // exit the thread in case the pool
+      // is stopped and there are no tasks
+      if (stop && task_stack.empty())
+      {
+        return;
+      }
 
-            // Get the next task from the queue
-            task = std::move(task_stack.top());
-            task_stack.pop();
-        }
-        task();
+      // Get the next task from the queue
+      task = std::move(task_stack.top());
+      task_stack.pop();
     }
+    task();
+  }
 }
 
 void MatrixBenchMark::parallel_computing_fifo(vector<vector<int>> &src1,
@@ -272,22 +291,22 @@ void MatrixBenchMark::parallel_computing_fifo(vector<vector<int>> &src1,
   // Vector to store threads
   vector<thread> threads;
 
-
   // Create the thread pool
-  for (int i = 0; i < num_threads; ++i) {
-    threads.emplace_back([this] {worker_thread_fifo();});
+  for (int i = 0; i < num_threads; ++i)
+  {
+    threads.emplace_back([this] { worker_thread_fifo(); });
   }
 
   // Create tasks for each block
-  for (size_t i = 0; i < src1.size(); i += block_size)
+  for (int i = 0; i < src1.size(); i += block_size)
   {
     lock_guard<mutex> lock(task_mutex);
     task_queue.push([this, &src1, &src2, &dst, block_size, i] {
-          this->matrix_mul(src1, src2, dst, block_size, i,
-                           min(i + block_size, src1.size()));
-        });
+      this->matrix_mul(src1, src2, dst, block_size, i,
+                       min(i + block_size, src1.size()));
+    });
   }
-  
+
   {
     // Lock the queue to update the stop flag safely
     unique_lock<mutex> lock(task_mutex);
@@ -299,7 +318,8 @@ void MatrixBenchMark::parallel_computing_fifo(vector<vector<int>> &src1,
 
   // Joining all worker threads to ensure they have
   // completed their tasks
-  for (auto& thread : threads) {
+  for (auto &thread : threads)
+  {
     thread.join();
   }
 }
@@ -315,10 +335,10 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
   // Vector to store threads
   vector<thread> threads;
 
-
   // Create the thread pool
-  for (int i = 0; i < num_threads; ++i) {
-    threads.emplace_back([this] {worker_thread_lifo();});
+  for (int i = 0; i < num_threads; ++i)
+  {
+    threads.emplace_back([this] { worker_thread_lifo(); });
   }
 
   // Create tasks for each block
@@ -326,11 +346,11 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
   {
     lock_guard<mutex> lock(task_mutex);
     task_stack.push([this, &src1, &src2, &dst, block_size, i] {
-          this->matrix_mul(src1, src2, dst, block_size, i,
-                           min(i + block_size, src1.size()));
-        });
+      this->matrix_mul(src1, src2, dst, block_size, i,
+                       min(i + block_size, src1.size()));
+    });
   }
-  
+
   {
     // Lock the queue to update the stop flag safely
     unique_lock<mutex> lock(task_mutex);
@@ -342,7 +362,8 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
 
   // Joining all worker threads to ensure they have
   // completed their tasks
-  for (auto& thread : threads) {
+  for (auto &thread : threads)
+  {
     thread.join();
   }
 }
@@ -392,7 +413,8 @@ void MatrixBenchMark::parallel_computing_simple_multithread(
   threads.clear();
 }
 
-void MatrixBenchMark::clear_matrix(vector<vector<int>> &dst)
+template <typename T>
+void MatrixBenchMark::clear_matrix(vector<vector<T>> &dst)
 {
   for (auto &row : dst)
   {
@@ -439,6 +461,13 @@ bool MatrixBenchMark::matrix_validation(vector<vector<int>> src1,
   }
   cout << "Matrix validation passed" << endl;
   return true;
+}
+
+void MatrixBenchMark::single_thread_matrix_mul_double(
+    vector<vector<double>> &matrix1, vector<vector<double>> &matrix2,
+    vector<vector<double>> &result, size_t block_size)
+{
+  matrix_mul(matrix1, matrix2, result, block_size, 0, matrix1.size());
 }
 
 #endif  // PARALLEL_MATRIX_MUL_H

@@ -11,11 +11,11 @@ timestamp=$(date +"%Y%m%d%H%M%S")
 # Start the perf stat for the matrix_mul_single
 perf stat ./matrix_mul_single 2>Results/perfStats_single_$timestamp.txt
 
+# Start the perf stata for the matrix_mul_double
+perf stat ./matrix_mul_double 2>Results/perfStats_double_$timestamp.txt
+
 # Start the perf stat for the parallel_matrix_mul_standard
 perf stat ./parallel_matrix_mul_standard 2>Results/perfStats_parallel_standard_$timestamp.txt
-
-# Start the perf stat for the matrix_mul_async
-perf stat ./matrix_mul_async 2>Results/perfStats_async_$timestamp.txt
 
 # Start the perf stat for the matrix_mul_fifo
 perf stat ./matrix_mul_fifo 2>Results/perfStats_fifo_$timestamp.txt
@@ -23,8 +23,14 @@ perf stat ./matrix_mul_fifo 2>Results/perfStats_fifo_$timestamp.txt
 # Start the perf stat for the matrix_mul_lifo
 perf stat ./matrix_mul_lifo 2>Results/perfStats_lifo_$timestamp.txt
 
+# Start the perf stat for the matrix_mul_async
+perf stat ./matrix_mul_async 2>Results/perfStats_async_$timestamp.txt
+
 # Start the perf stat for the matrix_mul_tbb
 perf stat ./matrix_mul_tbb 2>Results/perfStats_tbb_$timestamp.txt
+
+# Start the perf stat for openBLAS
+perf stat ./matrix_mul_blas 2>Results/perfStats_openBLAS_$timestamp.txt
 
 # Start validate the results
 echo "Validating the results"
@@ -34,6 +40,7 @@ diff -u matrix_mul_single.txt parallel_matrix_mul_lifo.txt | grep -E "^\+" | gre
 diff -u matrix_mul_single.txt parallel_matrix_mul_tbb.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_tbb_$timestamp.txt
 diff -u matrix_mul_single.txt parallel_matrix_mul_standard.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_standard_$timestamp.txt
 diff -u matrix_mul_single.txt parallel_matrix_mul_PPL.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_ppl_$timestamp.txt
+diff -u matrix_mul_single_double.txt parallel_matrix_mul_openBLAS.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_openBLAS_$timestamp.txt
 
 # Check file size, if size is 0 then the files are same, means the test is passed
 pushd Results/
@@ -56,6 +63,8 @@ rm -rf parallel_matrix_mul_fifo.txt
 rm -rf parallel_matrix_mul_lifo.txt
 rm -rf parallel_matrix_mul_tbb.txt
 rm -rf parallel_matrix_mul_standard.txt
+rm -rf parallel_matrix_mul_openBLAS.txt
+rm -rf matrix_mul_single_double.txt
 
 # Zip the results
 sudo 7z a -t7z -mx=9 -mmt=on -m0=lzma2 -md=1024m -ms=on Results.7z Results/

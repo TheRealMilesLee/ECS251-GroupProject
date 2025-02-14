@@ -1,10 +1,10 @@
 CXX = clang++
-CXXFLAGS = -Oz -g -pedantic-errors -Weverything -ltbb -Wno-poison-system-directories -Wthread-safety -Wno-c++98-compat -std=c++23 -pthread -lblas
+CXXFLAGS = -Oz -g -pedantic-errors -Weverything -Wno-poison-system-directories -Wthread-safety -Wno-c++98-compat -std=c++23 -pthread -ltbb -lblas
 
-SRC = matrix_mul.cpp parallel_matrix_mul_standard.cpp parallel_matrix_mul_async.cpp parallel_matrix_mul_fifo.cpp parallel_matrix_mul_lifo.cpp parallel_matrix_mul_tbb.cpp matrix_mul_blas.cpp
+SRC = matrix_mul.cpp matrix_mul_double.cpp parallel_matrix_mul_standard.cpp parallel_matrix_mul_async.cpp parallel_matrix_mul_fifo.cpp parallel_matrix_mul_lifo.cpp parallel_matrix_mul_tbb.cpp matrix_mul_blas.cpp
 OBJ = $(SRC:.cpp=.o)
 
-TARGETS = matrix_mul_single parallel_matrix_mul_standard matrix_mul_async matrix_mul_fifo matrix_mul_lifo matrix_mul_tbb matrix_mul_blas
+TARGETS = matrix_mul_single parallel_matrix_mul_standard matrix_mul_async matrix_mul_fifo matrix_mul_lifo matrix_mul_tbb matrix_mul_blas matrix_mul_double
 
 all: $(TARGETS)
 
@@ -27,6 +27,9 @@ matrix_mul_tbb: parallel_matrix_mul_tbb.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 matrix_mul_blas: matrix_mul_blas.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+matrix_mul_double: matrix_mul_double.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 %.o: %.cpp

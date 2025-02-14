@@ -44,6 +44,5 @@ int main()
   }
   fclose(f);
   matrixBenchMark.clear_matrix(dst);
-
   return 0;
 }

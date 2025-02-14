@@ -1,5 +1,6 @@
+#include <openblas/cblas.h>
+
 #include "parallel_matrix_mul.h"
-#include <cblas.h>
 
 using namespace std;
 int main()
@@ -17,26 +18,18 @@ int main()
   {
     for (size_t col = 0; col < n; col++)
     {
-      src1[row * n + col] = static_cast<double>(row) + static_cast<double>(col);
-      src2[row * n + col] = static_cast<double>(row) + static_cast<double>(col);
+      src1[row * n + col] =
+          static_cast<double>(row) + static_cast<double>(col);
+      src2[row * n + col] =
+          static_cast<double>(row) + static_cast<double>(col);
     }
   }
-  
-//   // Fill mat2
-//   for (int i = 0; i < n; ++i) {
-//     for (int j = 0; j < n; ++j) {
-//       src2[i * n + j] = rand();
-//     }
-//   }
 
   auto start_time = std::chrono::high_resolution_clock::now();
 
   // Perform matrix multiplication using cblas_dgemm
-  cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
-              n, n, n,
-              1.0, src1.data(), n,
-              src2.data(), n,
-              0.0, dst.data(), n);
+  cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n, n, n, 1.0,
+              src1.data(), n, src2.data(), n, 0.0, dst.data(), n);
 
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
@@ -48,7 +41,7 @@ int main()
        << " seconds or " << duration.count() % 1000000 << " microseconds"
        << endl;
 
-  FILE *f = fopen("matrix_mul_blas.txt", "w");
+  FILE *f = fopen("parallel_matrix_mul_openBLAS.txt", "w");
   for (size_t i = 0; i < n; i++)
   {
     for (size_t j = 0; j < n; j++)
