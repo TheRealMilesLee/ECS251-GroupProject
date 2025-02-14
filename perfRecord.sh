@@ -33,6 +33,7 @@ diff -u matrix_mul_single.txt parallel_matrix_mul_fifo.txt | grep -E "^\+" | gre
 diff -u matrix_mul_single.txt parallel_matrix_mul_lifo.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_lifo_$timestamp.txt
 diff -u matrix_mul_single.txt parallel_matrix_mul_tbb.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_tbb_$timestamp.txt
 diff -u matrix_mul_single.txt parallel_matrix_mul_standard.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_standard_$timestamp.txt
+diff -u matrix_mul_single.txt parallel_matrix_mul_PPL.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_ppl_$timestamp.txt
 
 # Check file size, if size is 0 then the files are same, means the test is passed
 pushd Results/
