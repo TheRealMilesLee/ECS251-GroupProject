@@ -1,4 +1,4 @@
-CXX = clang++-18
+CXX = clang++
 CXXFLAGS = -Oz -g -pedantic-errors -Weverything -ltbb -Wno-poison-system-directories -Wthread-safety -Wno-c++98-compat -std=c++23 -pthread -lblas
 
 SRC = matrix_mul.cpp parallel_matrix_mul_standard.cpp parallel_matrix_mul_async.cpp parallel_matrix_mul_fifo.cpp parallel_matrix_mul_lifo.cpp parallel_matrix_mul_tbb.cpp matrix_mul_blas.cpp
