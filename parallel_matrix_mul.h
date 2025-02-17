@@ -2,6 +2,7 @@
 #define PARALLEL_MATRIX_MUL_H
 #include <tbb/parallel_for.h>
 #include <tbb/tbb.h>
+#include <tbb/blocked_range2d.h>
 
 #include <chrono>
 #include <future>
@@ -18,26 +19,29 @@ using namespace std;
 
 class MatrixBenchMark
 {
- private:
-  queue<function<void()>> task_queue;  // FIFO queue for tasks
-  stack<function<void()>> task_stack;  // LIFO stack for tasks
-  mutex task_mutex;                    // Mutex for tasks
-  condition_variable cond;  // Condition variable for synchronization
-  bool stop = false;        // Stop flag for thread pool
- public:
+private:
+  queue<function<void()>> task_queue; // FIFO queue for tasks
+  stack<function<void()>> task_stack; // LIFO stack for tasks
+  mutex task_mutex; // Mutex for tasks
+  condition_variable cond; // Condition variable for synchronization
+  bool stop = false; // Stop flag for thread pool
+
+public:
   /**
    * @brief This function is used to clear the matrix
    *
    * @param dst The matrix to be cleared
    */
-  template <typename T>
+  template<typename T>
   void clear_matrix(vector<vector<T>> &dst);
 
-  template <typename T>
+  template<typename T>
   void matrix_mul(std::vector<std::vector<T>> &matrix1,
                   std::vector<std::vector<T>> &matrix2,
-                  std::vector<std::vector<T>> &result, size_t block_size,
-                  size_t start, size_t end);
+                  std::vector<std::vector<T>> &result,
+                  size_t block_size,
+                  size_t start,
+                  size_t end);
   /**
    * @brief Performs single-threaded matrix multiplication.
    *
@@ -74,7 +78,8 @@ class MatrixBenchMark
   void single_thread_matrix_mul_double(
       std::vector<std::vector<double>> &matrix1,
       std::vector<std::vector<double>> &matrix2,
-      std::vector<std::vector<double>> &result, size_t block_size);
+      std::vector<std::vector<double>> &result,
+      size_t block_size);
   /**
    * @brief Multiplies two matrices in parallel using asynchronous tasks.
    *
@@ -139,6 +144,21 @@ class MatrixBenchMark
                               std::vector<std::vector<int>> &matrix2,
                               std::vector<std::vector<int>> &result,
                               size_t block_size);
+  /**
+   * @brief This function is a helper function for the parallel_computing_tbb
+   * It does the actural matrix multiplication
+   * @param range is the range of the block
+   * @param src1 The first input matrix.
+   * @param src2 The second input matrix.
+   * @param dst The resulting matrix after multiplication.
+   * @param blockSize the size of the block
+   */
+  void parallel_computing_tbb_helper(
+      const tbb::blocked_range2d<size_t> &range,
+      vector<vector<int>> &src1,
+      vector<vector<int>> &src2,
+      vector<vector<int>> &dst,
+      size_t blockSize);
 
   /**
    * @brief This function is the simple multi-threaded version of the matrix
@@ -152,16 +172,20 @@ class MatrixBenchMark
   void parallel_computing_simple_multithread(
       std::vector<std::vector<int>> &matrix1,
       std::vector<std::vector<int>> &matrix2,
-      std::vector<std::vector<int>> &result, size_t block_size);
+      std::vector<std::vector<int>> &result,
+      size_t block_size);
 
-  bool matrix_validation(vector<vector<int>> src1, vector<vector<int>> src2,
+  bool matrix_validation(vector<vector<int>> src1,
+                         vector<vector<int>> src2,
                          vector<vector<int>> incoming_dst);
 };
-template <typename T>
+template<typename T>
 void MatrixBenchMark::matrix_mul(vector<vector<T>> &src1,
                                  vector<vector<T>> &src2,
-                                 vector<vector<T>> &dst, size_t blockSize,
-                                 size_t start, size_t end)
+                                 vector<vector<T>> &dst,
+                                 size_t blockSize,
+                                 size_t start,
+                                 size_t end)
 {
   // Perform matrix multiplication for the given block range using block ik
   // method
@@ -201,10 +225,12 @@ void MatrixBenchMark::parallel_computing_async(vector<vector<int>> &src1,
   for (size_t i = 0; i < src1.size(); i += blockSize)
   {
     // Launch async task for each block
-    futures.push_back(
-        async(launch::async, [this, &src1, &src2, &dst, blockSize, i]() {
-          this->matrix_mul(src1, src2, dst, blockSize, i,
-                           min(i + blockSize, src1.size()));
+    futures.push_back(async(
+        launch::async,
+        [this, &src1, &src2, &dst, blockSize, i]()
+        {
+          this->matrix_mul(
+              src1, src2, dst, blockSize, i, min(i + blockSize, src1.size()));
         }));
 
     // If we have launched as many tasks as threads, wait for some to complete
@@ -301,10 +327,16 @@ void MatrixBenchMark::parallel_computing_fifo(vector<vector<int>> &src1,
   for (int i = 0; i < src1.size(); i += block_size)
   {
     lock_guard<mutex> lock(task_mutex);
-    task_queue.push([this, &src1, &src2, &dst, block_size, i] {
-      this->matrix_mul(src1, src2, dst, block_size, i,
-                       min(i + block_size, src1.size()));
-    });
+    task_queue.push(
+        [this, &src1, &src2, &dst, block_size, i]
+        {
+          this->matrix_mul(src1,
+                           src2,
+                           dst,
+                           block_size,
+                           i,
+                           min(i + block_size, src1.size()));
+        });
   }
 
   {
@@ -345,10 +377,16 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
   for (size_t i = 0; i < src1.size(); i += block_size)
   {
     lock_guard<mutex> lock(task_mutex);
-    task_stack.push([this, &src1, &src2, &dst, block_size, i] {
-      this->matrix_mul(src1, src2, dst, block_size, i,
-                       min(i + block_size, src1.size()));
-    });
+    task_stack.push(
+        [this, &src1, &src2, &dst, block_size, i]
+        {
+          this->matrix_mul(src1,
+                           src2,
+                           dst,
+                           block_size,
+                           i,
+                           min(i + block_size, src1.size()));
+        });
   }
 
   {
@@ -368,23 +406,75 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
   }
 }
 
+void MatrixBenchMark::parallel_computing_tbb_helper(
+    const tbb::blocked_range2d<size_t> &range,
+    vector<vector<int>> &src1,
+    vector<vector<int>> &src2,
+    vector<vector<int>> &dst,
+    size_t blockSize)
+{
+  for (size_t i = range.rows().begin(); i < range.rows().end();
+       i += blockSize)
+  {
+    for (size_t j = range.cols().begin(); j < range.cols().end();
+         j += blockSize)
+    {
+      matrix_mul(src1, src2, dst, blockSize, i, j);
+    }
+  }
+}
+
 void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
                                              vector<vector<int>> &src2,
                                              vector<vector<int>> &dst,
                                              size_t blockSize)
 {
-  // Use TBB's parallel_for with blocked_range
-  tbb::parallel_for(tbb::blocked_range<size_t>(0, src1.size(), blockSize),
-                    [&](const tbb::blocked_range<size_t> &range) {
-                      matrix_mul(src1, src2, dst, blockSize, range.begin(),
-                                 range.end());
-                    });
+  /**
+    In this implementation, we divide the matrix into non-overlapping blocks and assign each block to a separate thread for parallel computation.
+
+    Example: Suppose `src1`, `src2`, and `dst` are 4x4 matrices:
+
+    src1:                   src2:
+    -----------------        ---------------------
+    |  1 |  2 |  3 |  4 |   | 17 | 18 | 19 | 20 |
+    -----------------        ---------------------
+    |  5 |  6 |  7 |  8 |   | 21 | 22 | 23 | 24 |
+    -----------------        ---------------------
+    |  9 | 10 | 11 | 12 |   | 25 | 26 | 27 | 28 |
+    -----------------        ---------------------
+    | 13 | 14 | 15 | 16 |   | 29 | 30 | 31 | 32 |
+    -----------------        ---------------------
+
+    If the block size is 2x2, we partition the matrices into 2x2 submatrices.
+    Each thread is assigned a specific (i, j) block from `src1` and `src2` to compute a corresponding block in `dst`.
+
+    Example: The first block (top-left) multiplication would be:
+
+    Block from `src1`:      Block from `src2`:      Resulting block in `dst`:
+    ---------               -----------             ---------------------------------------------------------
+    |  1 |  2 |            | 17 | 18 |            | 1*17 + 2*21 + 3*25 + 4*29 | 1*18 + 2*22 + 3*26 + 4*30 |
+    ---------  x           -----------  =         ---------------------------------------------------------
+    |  5 |  6 |            | 21 | 22 |            | 5*17 + 6*21 + 7*25 + 8*29 | 5*18 + 6*22 + 7*26 + 8*30 |
+    ---------               -----------             ---------------------------------------------------------
+
+    The same process is executed in parallel for each 2x2 block by different threads.
+
+    Since each block computation is independent of the others, we use Intel Threading Building Blocks (TBB)
+    to parallelize the computation, ensuring efficient utilization of multi-core processors.
+ */
+
+  size_t N = src1.size();
+  tbb::parallel_for(
+      tbb::blocked_range2d<size_t>(0, N, blockSize, 0, N, blockSize),
+      [&](const tbb::blocked_range2d<size_t> &range)
+      { parallel_computing_tbb_helper(range, src1, src2, dst, blockSize); });
 }
 
 void MatrixBenchMark::parallel_computing_simple_multithread(
     std::vector<std::vector<int>> &matrix1,
     std::vector<std::vector<int>> &matrix2,
-    std::vector<std::vector<int>> &result, size_t block_size)
+    std::vector<std::vector<int>> &result,
+    size_t block_size)
 {
   // Get the number of available threads
   size_t num_threads = thread::hardware_concurrency();
@@ -396,9 +486,14 @@ void MatrixBenchMark::parallel_computing_simple_multithread(
   for (size_t i = 0; i < matrix1.size(); i += block_size)
   {
     // Launch a thread for each block
-    threads.push_back(
-        thread([this, &matrix1, &matrix2, &result, block_size, i]() {
-          this->matrix_mul(matrix1, matrix2, result, block_size, i,
+    threads.push_back(thread(
+        [this, &matrix1, &matrix2, &result, block_size, i]()
+        {
+          this->matrix_mul(matrix1,
+                           matrix2,
+                           result,
+                           block_size,
+                           i,
                            min(i + block_size, matrix1.size()));
         }));
   }
@@ -413,7 +508,7 @@ void MatrixBenchMark::parallel_computing_simple_multithread(
   threads.clear();
 }
 
-template <typename T>
+template<typename T>
 void MatrixBenchMark::clear_matrix(vector<vector<T>> &dst)
 {
   for (auto &row : dst)
@@ -464,10 +559,12 @@ bool MatrixBenchMark::matrix_validation(vector<vector<int>> src1,
 }
 
 void MatrixBenchMark::single_thread_matrix_mul_double(
-    vector<vector<double>> &matrix1, vector<vector<double>> &matrix2,
-    vector<vector<double>> &result, size_t block_size)
+    vector<vector<double>> &matrix1,
+    vector<vector<double>> &matrix2,
+    vector<vector<double>> &result,
+    size_t block_size)
 {
   matrix_mul(matrix1, matrix2, result, block_size, 0, matrix1.size());
 }
 
-#endif  // PARALLEL_MATRIX_MUL_H
+#endif // PARALLEL_MATRIX_MUL_H
