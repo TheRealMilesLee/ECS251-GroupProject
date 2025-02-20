@@ -167,9 +167,6 @@ class MatrixBenchMark
       std::vector<std::vector<int>> &matrix1,
       std::vector<std::vector<int>> &matrix2,
       std::vector<std::vector<int>> &result, size_t block_size);
-
-  bool matrix_validation(vector<vector<int>> src1, vector<vector<int>> src2,
-                         vector<vector<int>> incoming_dst);
 };
 template <typename T>
 void MatrixBenchMark::matrix_mul(vector<vector<T>> &src1,
@@ -449,39 +446,6 @@ void MatrixBenchMark::single_thread_matrix_mul(vector<vector<int>> &matrix1,
   matrix_mul(matrix1, matrix2, result, block_size, 0, matrix1.size());
 }
 
-bool MatrixBenchMark::matrix_validation(vector<vector<int>> src1,
-                                        vector<vector<int>> src2,
-                                        vector<vector<int>> incoming_dst)
-{
-  vector<vector<int>> compare_matrix(src1.size(), vector<int>(src1.size()));
-  for (size_t i = 0; i < src1.size(); i++)
-  {
-    for (size_t j = 0; j < src2[0].size(); j++)
-    {
-      for (size_t k = 0; k < src2.size(); k++)
-      {
-        compare_matrix[i][j] += src1[i][k] * src2[k][j];
-      }
-    }
-  }
-
-  // start the comparison
-  for (size_t row = 0; row < incoming_dst.size(); row++)
-  {
-    for (size_t col = 0; col < incoming_dst[0].size(); col++)
-    {
-      if (compare_matrix[row][col] != incoming_dst[row][col])
-      {
-        cout << "Matrix validation failed at row: " << row
-             << " and column: " << col << endl;
-        return false;
-      }
-    }
-  }
-  cout << "Matrix validation passed" << endl;
-  return true;
-}
-
 void MatrixBenchMark::single_thread_matrix_mul_double(
     vector<vector<double>> &matrix1, vector<vector<double>> &matrix2,
     vector<vector<double>> &result, size_t block_size)
@@ -494,24 +458,28 @@ void MatrixBenchMark::parallel_computing_openmp(vector<vector<int>> &src1,
                                                 vector<vector<int>> &dst,
                                                 size_t blockSize)
 {
+  // Clear the destination matrix before starting the multiplication
+  clear_matrix(dst);
+
   size_t start = 0;
   size_t end = src1.size();
   // Perform matrix multiplication using OpenMP
 #pragma omp parallel for collapse(2) schedule(dynamic, 1)
-  for (size_t iblock = start; iblock < end; iblock += blockSize)
+  for (size_t iblock = 0; iblock < src1.size(); iblock += blockSize)
   {
     for (size_t kblock = 0; kblock < src2.size(); kblock += blockSize)
     {
-      for (size_t jblock = 0; jblock < dst.size(); jblock += blockSize)
+      for (size_t jblock = 0; jblock < dst[0].size(); jblock += blockSize)
       {
         for (size_t i = iblock; i < min(iblock + blockSize, src1.size()); i++)
         {
           for (size_t k = kblock; k < min(kblock + blockSize, src2.size());
                k++)
           {
-            for (size_t j = jblock; j < min(jblock + blockSize, dst.size());
-                 j++)
+            for (size_t j = jblock;
+                 j < min(jblock + blockSize, dst[0].size()); j++)
             {
+#pragma omp atomic
               dst[i][j] += src1[i][k] * src2[k][j];
             }
           }

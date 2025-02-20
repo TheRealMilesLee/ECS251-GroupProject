@@ -3,7 +3,7 @@ using namespace std;
 int main()
 {
   // Default values
-  size_t matrix_size = 8192;
+  size_t matrix_size = 4096;
   size_t block_size = 128;
   MatrixBenchMark matrixBenchMark;
 
@@ -34,7 +34,7 @@ int main()
   double seconds_double =
       static_cast<double>(duration_double.count()) / 1000000.0;
 
-  cout << "Matrix multiplication time with single thread double: "
+  cout << "Matrix multiplication time with single thread double precision: "
        << seconds_double << " seconds or "
        << duration_double.count() % 1000000 << " microseconds" << endl;
 

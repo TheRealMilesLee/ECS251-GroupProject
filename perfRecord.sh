@@ -54,7 +54,6 @@ for file in diff_parallel_*.txt; do
     rm -rf $file
   else
     echo -e "\e[31m$file is not empty, Validation Failed\e[0m"
-    rm -rf $file
   fi
 done
 popd

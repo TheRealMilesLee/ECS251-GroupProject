@@ -1,9 +1,7 @@
 CXX = clang++
-CXXFLAGS = -O3 -g -pedantic-errors -Weverything \
+CXXFLAGS = -Oz -g -pedantic-errors -Weverything \
            -Wno-poison-system-directories -Wthread-safety \
            -Wno-c++98-compat -std=c++23 -pthread -ltbb -lblas -fopenmp \
-           -ffast-math -fvectorize -march=native -mtune=native \
-           -fopenmp-simd -Rpass=loop-vectorize
 
 SRC = matrix_mul.cpp matrix_mul_double.cpp \
 		parallel_matrix_mul_standard.cpp \
