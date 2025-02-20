@@ -6,7 +6,7 @@ using namespace std;
 int main()
 {
   // Default values
-  size_t n = 4096;
+  size_t n = 8192;
 
   // Initialize matrices with size n x n
   std::vector<double> src1(n * n);

@@ -3,7 +3,7 @@ using namespace std;
 int main()
 {
   // Default values
-  size_t matrix_size = 4096;
+  size_t matrix_size = 8192;
   size_t block_size = 128;
   MatrixBenchMark matrixBenchMark;
 
@@ -38,7 +38,7 @@ int main()
        << seconds_double << " seconds or "
        << duration_double.count() % 1000000 << " microseconds" << endl;
 
-  FILE *f_double = fopen("matrix_mul_single_double.txt", "w");
+  FILE *f_double = fopen("matrix_mul_double.txt", "w");
   for (size_t i = 0; i < matrix_size; i++)
   {
     for (size_t j = 0; j < matrix_size; j++)

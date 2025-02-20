@@ -23,17 +23,17 @@ int main()
   }
 
   auto start_time = std::chrono::high_resolution_clock::now();
-  matrixBenchMark.parallel_computing_lifo(src1, src2, dst, block_size);
+  matrixBenchMark.parallel_computing_openmp(src1, src2, dst, block_size);
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
       end_time - start_time);
 
   double seconds = static_cast<double>(duration.count()) / 1000000.0;
 
-  cout << "Matrix multiplication time with LIFO: " << seconds
+  cout << "Matrix multiplication time with openMP: " << seconds
        << " seconds or " << duration.count() % 1000000 << " microseconds"
        << endl;
-  FILE *f = fopen("parallel_matrix_mul_lifo.txt", "w");
+  FILE *f = fopen("parallel_matrix_mul_openMP.txt", "w");
   for (size_t i = 0; i < dst.size(); i++)
   {
     for (size_t j = 0; j < dst[0].size(); j++)
@@ -43,7 +43,7 @@ int main()
     fprintf(f, "\n");
   }
   fclose(f);
-  // Clear dst for next testing
   matrixBenchMark.clear_matrix(dst);
+
   return 0;
 }

@@ -3,7 +3,7 @@ using namespace std;
 int main()
 {
   // Default values
-  size_t matrix_size = 4096;
+  size_t matrix_size = 8192;
   size_t block_size = 128;
   MatrixBenchMark matrixBenchMark;
 

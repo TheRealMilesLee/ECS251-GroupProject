@@ -143,6 +143,18 @@ class MatrixBenchMark
                               size_t block_size);
 
   /**
+   * @brief THis function is the openmp version of the matrix multiplication
+   *
+   * @param src1 is the first matrix
+   * @param src2 is the second matrix
+   * @param dst is the resulting matrix
+   * @param blockSize is the size of the block
+   */
+  void parallel_computing_openmp(std::vector<std::vector<int>> &src1,
+                                 std::vector<std::vector<int>> &src2,
+                                 std::vector<std::vector<int>> &dst,
+                                 size_t blockSize);
+  /**
    * @brief This function is the simple multi-threaded version of the matrix
    * multiplication
    *
@@ -475,6 +487,38 @@ void MatrixBenchMark::single_thread_matrix_mul_double(
     vector<vector<double>> &result, size_t block_size)
 {
   matrix_mul(matrix1, matrix2, result, block_size, 0, matrix1.size());
+}
+
+void MatrixBenchMark::parallel_computing_openmp(vector<vector<int>> &src1,
+                                                vector<vector<int>> &src2,
+                                                vector<vector<int>> &dst,
+                                                size_t blockSize)
+{
+  size_t start = 0;
+  size_t end = src1.size();
+  // Perform matrix multiplication using OpenMP
+#pragma omp parallel for collapse(2) schedule(dynamic, 1)
+  for (size_t iblock = start; iblock < end; iblock += blockSize)
+  {
+    for (size_t kblock = 0; kblock < src2.size(); kblock += blockSize)
+    {
+      for (size_t jblock = 0; jblock < dst.size(); jblock += blockSize)
+      {
+        for (size_t i = iblock; i < min(iblock + blockSize, src1.size()); i++)
+        {
+          for (size_t k = kblock; k < min(kblock + blockSize, src2.size());
+               k++)
+          {
+            for (size_t j = jblock; j < min(jblock + blockSize, dst.size());
+                 j++)
+            {
+              dst[i][j] += src1[i][k] * src2[k][j];
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 #endif  // PARALLEL_MATRIX_MUL_H

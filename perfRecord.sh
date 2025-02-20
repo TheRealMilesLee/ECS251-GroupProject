@@ -32,6 +32,9 @@ perf stat ./matrix_mul_tbb 2>Results/perfStats_tbb_$timestamp.txt
 # Start the perf stat for openBLAS
 perf stat ./matrix_mul_blas 2>Results/perfStats_openBLAS_$timestamp.txt
 
+# Start the perf stat for openMP
+perf stat ./matrix_mul_openmp 2>Results/perfStats_openMP_$timestamp.txt
+
 # Start validate the results
 echo "Validating the results"
 diff -u matrix_mul_single.txt parallel_matrix_mul_async.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_async_$timestamp.txt
@@ -39,8 +42,8 @@ diff -u matrix_mul_single.txt parallel_matrix_mul_fifo.txt | grep -E "^\+" | gre
 diff -u matrix_mul_single.txt parallel_matrix_mul_lifo.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_lifo_$timestamp.txt
 diff -u matrix_mul_single.txt parallel_matrix_mul_tbb.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_tbb_$timestamp.txt
 diff -u matrix_mul_single.txt parallel_matrix_mul_standard.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_standard_$timestamp.txt
-diff -u matrix_mul_single.txt parallel_matrix_mul_PPL.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_ppl_$timestamp.txt
-diff -u matrix_mul_single_double.txt parallel_matrix_mul_openBLAS.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_openBLAS_$timestamp.txt
+diff -u matrix_mul_double.txt parallel_matrix_mul_openBLAS.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_openBLAS_$timestamp.txt
+diff -u matrix_mul_single.txt parallel_matrix_mul_openMP.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_openMP_$timestamp.txt
 
 # Check file size, if size is 0 then the files are same, means the test is passed
 pushd Results/
@@ -58,13 +61,14 @@ popd
 # clean the files
 make clean
 rm -rf matrix_mul_single.txt
+rm -rf matrix_mul_double.txt
 rm -rf parallel_matrix_mul_async.txt
 rm -rf parallel_matrix_mul_fifo.txt
 rm -rf parallel_matrix_mul_lifo.txt
 rm -rf parallel_matrix_mul_tbb.txt
 rm -rf parallel_matrix_mul_standard.txt
 rm -rf parallel_matrix_mul_openBLAS.txt
-rm -rf matrix_mul_single_double.txt
+rm -rf parallel_matrix_mul_openMP.txt
 
 # Zip the results
 sudo 7z a -t7z -mx=9 -mmt=on -m0=lzma2 -md=1024m -ms=on Results.7z Results/
