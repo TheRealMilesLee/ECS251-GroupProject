@@ -9,7 +9,7 @@ make
 timestamp=$(date +"%Y%m%d%H%M%S")
 
 # Collect all the events we want to monitor
-events="task-clock,context-switches,cpu-migrations,page-faults,instructions,cycles,stalled-cycles-frontend,stalled-cycles-backend,branches,branch-misses,L1-dcache-load-misses,LLC-load-misses"
+events="task-clock,context-switches,cpu-migrations,page-faults,instructions,cycles,stalled-cycles-frontend,stalled-cycles-backend,branches,branch-misses,L1-dcache-load-misses"
 
 # custom perf command
 run_perf() {
