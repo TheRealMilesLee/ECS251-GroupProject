@@ -16,7 +16,7 @@ run_perf() {
   name=$1
   cmd=$2
   echo "Running $name test..."
-  perf stat -e $events -a -- $cmd 2>Results/perfStats_${name}_$timestamp.txt
+  perf stat -e $events -- $cmd 2>Results/perfStats_${name}_$timestamp.txt
 }
 
 # run perf on all approaches
