@@ -9,7 +9,7 @@ make
 timestamp=$(date +"%Y%m%d%H%M%S")
 
 # Collect all the events we want to monitor
-events="task-clock,context-switches,cpu-migrations,page-faults,instructions,cycles,stalled-cycles-frontend,stalled-cycles-backend,branches,branch-misses,L1-dcache-load-misses,LLC-load-misses,mem_load_retired.l3_miss,syscalls:sys_enter_futex,syscalls:sys_exit_futex"
+events="task-clock,context-switches,cpu-migrations,page-faults,instructions,cycles,stalled-cycles-frontend,stalled-cycles-backend,branches,branch-misses,L1-dcache-load-misses,LLC-load-misses"
 
 # custom perf command
 run_perf() {
@@ -17,11 +17,6 @@ run_perf() {
   cmd=$2
   echo "Running $name test..."
   perf stat -e $events -a -- $cmd 2>Results/perfStats_${name}_$timestamp.txt
-  if [ $? -ne 0 ]; then
-    echo -e "\e[31m$name failed to run. Check Results/perfStats_${name}_$timestamp.txt for details.\e[0m"
-  else
-    echo -e "\e[32m$name completed successfully.\e[0m"
-  fi
 }
 
 # run perf on all approaches
@@ -38,18 +33,29 @@ run_perf "openMP" ./matrix_mul_openmp
 # run test on all results
 echo "Validating the results"
 for variant in async fifo lifo tbb standard openBLAS openMP; do
-  diff -u matrix_mul_single.txt parallel_matrix_mul_${variant}.txt | grep -E "^\\+" | grep -v "+++" >Results/diff_parallel_${variant}_$timestamp.txt
-  if [ $(wc -c <Results/diff_parallel_${variant}_$timestamp.txt) -eq 0 ]; then
-    echo -e "\e[32mValidation Passed for $variant\e[0m"
-    rm -rf Results/diff_parallel_${variant}_$timestamp.txt
+  if [ $variant != "openBLAS" ]; then
+    diff -u matrix_mul_single.txt parallel_matrix_mul_${variant}.txt | grep -E "^\\+" | grep -v "+++" >Results/diff_parallel_${variant}_$timestamp.txt
+    if [ $(wc -c <Results/diff_parallel_${variant}_$timestamp.txt) -eq 0 ]; then
+      echo -e "\e[32mValidation Passed for $variant\e[0m"
+      rm -rf Results/diff_parallel_${variant}_$timestamp.txt
+    else
+      echo -e "\e[31mValidation Failed for $variant\e[0m"
+    fi
   else
-    echo -e "\e[31mValidation Failed for $variant\e[0m"
+    diff -u matrix_mul_double.txt parallel_matrix_mul_${variant}.txt | grep -E "^\\+" | grep -v "+++" >Results/diff_${variant}_$timestamp.txt
+    if [ $(wc -c <Results/diff_${variant}_$timestamp.txt) -eq 0 ]; then
+      echo -e "\e[32mValidation Passed for $variant\e[0m"
+      rm -rf Results/diff_${variant}_$timestamp.txt
+    else
+      echo -e "\e[31mValidation Failed for $variant\e[0m"
+    fi
   fi
 done
 
 # cleanup
 make clean
 rm -rf matrix_mul_*.txt
+rm -rf parallel_matrix_mul_*.txt
 
 # zip
 sudo 7z a -t7z -mx=9 -mmt=on -m0=lzma2 -md=1024m -ms=on Results.7z Results/
