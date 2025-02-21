@@ -15,7 +15,23 @@
 #include <thread>
 #include <vector>
 
-using namespace std;
+using std::async;
+using std::condition_variable;
+using std::cout;
+using std::endl;
+using std::fill;
+using std::function;
+using std::future;
+using std::launch;
+using std::lock_guard;
+using std::min;
+using std::mutex;
+using std::queue;
+using std::stack;
+using std::thread;
+using std::unique_lock;
+using std::unique_ptr;
+using std::vector;
 
 class MatrixBenchMark
 {
@@ -303,13 +319,13 @@ void MatrixBenchMark::parallel_computing_fifo(vector<vector<int>> &src1,
   vector<thread> threads;
 
   // Create the thread pool
-  for (int i = 0; i < num_threads; ++i)
+  for (size_t i = 0; i < num_threads; ++i)
   {
     threads.emplace_back([this] { worker_thread_fifo(); });
   }
 
   // Create tasks for each block
-  for (int i = 0; i < src1.size(); i += block_size)
+  for (size_t i = 0; i < src1.size(); i += block_size)
   {
     lock_guard<mutex> lock(task_mutex);
     task_queue.push([this, &src1, &src2, &dst, block_size, i] {
@@ -347,7 +363,7 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
   vector<thread> threads;
 
   // Create the thread pool
-  for (int i = 0; i < num_threads; ++i)
+  for (size_t i = 0; i < num_threads; ++i)
   {
     threads.emplace_back([this] { worker_thread_lifo(); });
   }
@@ -402,9 +418,6 @@ void MatrixBenchMark::parallel_computing_simple_multithread(
     std::vector<std::vector<int>> &matrix2,
     std::vector<std::vector<int>> &result, size_t block_size)
 {
-  // Get the number of available threads
-  size_t num_threads = thread::hardware_concurrency();
-
   // Vector to store threads
   vector<thread> threads;
 
@@ -460,11 +473,8 @@ void MatrixBenchMark::parallel_computing_openmp(vector<vector<int>> &src1,
 {
   // Clear the destination matrix before starting the multiplication
   clear_matrix(dst);
-
-  size_t start = 0;
-  size_t end = src1.size();
   // Perform matrix multiplication using OpenMP
-#pragma omp parallel for collapse(2) schedule(dynamic, 1)
+#pragma omp parallel for collapse(2)
   for (size_t iblock = 0; iblock < src1.size(); iblock += blockSize)
   {
     for (size_t kblock = 0; kblock < src2.size(); kblock += blockSize)
@@ -479,7 +489,6 @@ void MatrixBenchMark::parallel_computing_openmp(vector<vector<int>> &src1,
             for (size_t j = jblock;
                  j < min(jblock + blockSize, dst[0].size()); j++)
             {
-#pragma omp atomic
               dst[i][j] += src1[i][k] * src2[k][j];
             }
           }
