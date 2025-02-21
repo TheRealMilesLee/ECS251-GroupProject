@@ -8,66 +8,48 @@ make
 
 timestamp=$(date +"%Y%m%d%H%M%S")
 
-# Start the perf stat for the matrix_mul_single
-perf stat ./matrix_mul_single 2>Results/perfStats_single_$timestamp.txt
+# Collect all the events we want to monitor
+events="task-clock,context-switches,cpu-migrations,page-faults,instructions,cycles,stalled-cycles-frontend,stalled-cycles-backend,branches,branch-misses,L1-dcache-load-misses,LLC-load-misses,mem_load_retired.l3_miss,syscalls:sys_enter_futex,syscalls:sys_exit_futex"
 
-# Start the perf stata for the matrix_mul_double
-perf stat ./matrix_mul_double 2>Results/perfStats_double_$timestamp.txt
-
-# Start the perf stat for the parallel_matrix_mul_standard
-perf stat ./parallel_matrix_mul_standard 2>Results/perfStats_parallel_standard_$timestamp.txt
-
-# Start the perf stat for the matrix_mul_fifo
-perf stat ./matrix_mul_fifo 2>Results/perfStats_fifo_$timestamp.txt
-
-# Start the perf stat for the matrix_mul_lifo
-perf stat ./matrix_mul_lifo 2>Results/perfStats_lifo_$timestamp.txt
-
-# Start the perf stat for the matrix_mul_async
-perf stat ./matrix_mul_async 2>Results/perfStats_async_$timestamp.txt
-
-# Start the perf stat for the matrix_mul_tbb
-perf stat ./matrix_mul_tbb 2>Results/perfStats_tbb_$timestamp.txt
-
-# Start the perf stat for openBLAS
-perf stat ./matrix_mul_blas 2>Results/perfStats_openBLAS_$timestamp.txt
-
-# Start the perf stat for openMP
-perf stat ./matrix_mul_openmp 2>Results/perfStats_openMP_$timestamp.txt
-
-# Start validate the results
-echo "Validating the results"
-diff -u matrix_mul_single.txt parallel_matrix_mul_async.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_async_$timestamp.txt
-diff -u matrix_mul_single.txt parallel_matrix_mul_fifo.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_fifo_$timestamp.txt
-diff -u matrix_mul_single.txt parallel_matrix_mul_lifo.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_lifo_$timestamp.txt
-diff -u matrix_mul_single.txt parallel_matrix_mul_tbb.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_tbb_$timestamp.txt
-diff -u matrix_mul_single.txt parallel_matrix_mul_standard.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_standard_$timestamp.txt
-diff -u matrix_mul_double.txt parallel_matrix_mul_openBLAS.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_openBLAS_$timestamp.txt
-diff -u matrix_mul_single.txt parallel_matrix_mul_openMP.txt | grep -E "^\+" | grep -v "+++" >Results/diff_parallel_openMP_$timestamp.txt
-
-# Check file size, if size is 0 then the files are same, means the test is passed
-pushd Results/
-# Using the wc command to get the file size for diff_parallel files only
-for file in diff_parallel_*.txt; do
-  if [ $(wc -c <$file) -eq 0 ]; then
-    echo -e "\e[32m$file is empty, Validation Passed\e[0m"
-    rm -rf $file
+# custom perf command
+run_perf() {
+  name=$1
+  cmd=$2
+  echo "Running $name test..."
+  perf stat -e $events -a -- $cmd 2>Results/perfStats_${name}_$timestamp.txt
+  if [ $? -ne 0 ]; then
+    echo -e "\e[31m$name failed to run. Check Results/perfStats_${name}_$timestamp.txt for details.\e[0m"
   else
-    echo -e "\e[31m$file is not empty, Validation Failed\e[0m"
+    echo -e "\e[32m$name completed successfully.\e[0m"
+  fi
+}
+
+# run perf on all approaches
+run_perf "single" ./matrix_mul_single
+run_perf "double" ./matrix_mul_double
+run_perf "parallel_standard" ./parallel_matrix_mul_standard
+run_perf "fifo" ./matrix_mul_fifo
+run_perf "lifo" ./matrix_mul_lifo
+run_perf "async" ./matrix_mul_async
+run_perf "tbb" ./matrix_mul_tbb
+run_perf "openBLAS" ./matrix_mul_blas
+run_perf "openMP" ./matrix_mul_openmp
+
+# run test on all results
+echo "Validating the results"
+for variant in async fifo lifo tbb standard openBLAS openMP; do
+  diff -u matrix_mul_single.txt parallel_matrix_mul_${variant}.txt | grep -E "^\\+" | grep -v "+++" >Results/diff_parallel_${variant}_$timestamp.txt
+  if [ $(wc -c <Results/diff_parallel_${variant}_$timestamp.txt) -eq 0 ]; then
+    echo -e "\e[32mValidation Passed for $variant\e[0m"
+    rm -rf Results/diff_parallel_${variant}_$timestamp.txt
+  else
+    echo -e "\e[31mValidation Failed for $variant\e[0m"
   fi
 done
-popd
-# clean the files
-make clean
-rm -rf matrix_mul_single.txt
-rm -rf matrix_mul_double.txt
-rm -rf parallel_matrix_mul_async.txt
-rm -rf parallel_matrix_mul_fifo.txt
-rm -rf parallel_matrix_mul_lifo.txt
-rm -rf parallel_matrix_mul_tbb.txt
-rm -rf parallel_matrix_mul_standard.txt
-rm -rf parallel_matrix_mul_openBLAS.txt
-rm -rf parallel_matrix_mul_openMP.txt
 
-# Zip the results
+# cleanup
+make clean
+rm -rf matrix_mul_*.txt
+
+# zip
 sudo 7z a -t7z -mx=9 -mmt=on -m0=lzma2 -md=1024m -ms=on Results.7z Results/
