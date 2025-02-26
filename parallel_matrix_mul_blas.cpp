@@ -1,5 +1,3 @@
-#include <openblas/cblas.h>
-
 #include "parallel_matrix_mul.h"
 
 using namespace std;
@@ -28,8 +26,11 @@ int main()
   auto start_time = std::chrono::high_resolution_clock::now();
 
   // Perform matrix multiplication using cblas_dgemm
-  cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, static_cast<blasint>(n), static_cast<blasint>(n), static_cast<blasint>(n), 1.0,
-              src1.data(), static_cast<blasint>(n), src2.data(), static_cast<blasint>(n), 0.0, dst.data(), static_cast<blasint>(n));
+  cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+              static_cast<blasint>(n), static_cast<blasint>(n),
+              static_cast<blasint>(n), 1.0, src1.data(),
+              static_cast<blasint>(n), src2.data(), static_cast<blasint>(n),
+              0.0, dst.data(), static_cast<blasint>(n));
 
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
