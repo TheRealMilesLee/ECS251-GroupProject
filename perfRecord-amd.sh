@@ -16,7 +16,7 @@ run_perf() {
   cmd=$2
   timestamp=$(date +"%Y%m%d%H%M%S") # 每次运行生成不同时间戳
   echo "Running $name test..."
-  sudo perf stat -e $events -- $cmd 2>Results/perfStats_${name}_$timestamp.txt
+  sudo perf stat -r 10 -e $events -- $cmd 2>&1 | tee Results/perfStats_${name}_$timestamp.txt
 }
 
 # Run perf on all approaches
