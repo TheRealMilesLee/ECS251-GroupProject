@@ -1,5 +1,5 @@
 CXX = clang++
-CXXFLAGS = -Oz -g -pedantic-errors -Wno-padded -Weverything \
+CXXFLAGS = -O3 -g -pedantic-errors -Wno-padded -Weverything \
            -Wno-poison-system-directories -Wthread-safety \
            -Wno-c++98-compat -std=c++23 -pthread -ltbb -lblas -fopenmp \
 
