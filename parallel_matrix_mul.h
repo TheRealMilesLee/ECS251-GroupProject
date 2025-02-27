@@ -403,17 +403,32 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
                                              vector<vector<int>> &dst,
                                              size_t blockSize)
 {
-  // Use TBB parallel_for to parallelize the computation along the 'i'
-  // dimension
-  tbb::affinity_partitioner ap;  // Helps maintain cache locality
+  tbb::parallel_for(tbb::blocked_range<size_t>(0, src1.size(), blockSize),
+                    [&](const tbb::blocked_range<size_t> &range) {
+                      vector<vector<int>> local_dst(
+                          dst.size(), vector<int>(dst[0].size(), 0));
 
-  tbb::parallel_for(
-      tbb::blocked_range<size_t>(0, src1.size(), blockSize),
-      [&](const tbb::blocked_range<size_t> &range) {
-        // Each thread handles a block in the 'i' dimension
-        matrix_mul(src1, src2, dst, blockSize, range.begin(), range.end());
-      },
-      ap);  // Use affinity_partitioner to improve thread locality
+                      for (size_t i = range.begin(); i < range.end(); i++)
+                      {
+                        for (size_t j = 0; j < dst[0].size(); j++)
+                        {
+                          for (size_t k = 0; k < src2.size(); k++)
+                          {
+                            local_dst[i][j] += src1[i][k] * src2[k][j];
+                          }
+                        }
+                      }
+
+// Using lock or atomic operation to update the shared result matrix
+#pragma omp critical
+                      for (size_t i = range.begin(); i < range.end(); i++)
+                      {
+                        for (size_t j = 0; j < dst[0].size(); j++)
+                        {
+                          dst[i][j] += local_dst[i][j];
+                        }
+                      }
+                    });
 }
 
 void MatrixBenchMark::parallel_computing_simple_multithread(
