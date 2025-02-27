@@ -38,29 +38,27 @@ using std::vector;
 
 class MatrixBenchMark
 {
-private:
-  queue<function<void()>> task_queue; // FIFO queue for tasks
-  stack<function<void()>> task_stack; // LIFO stack for tasks
-  mutex task_mutex; // Mutex for tasks
-  condition_variable cond; // Condition variable for synchronization
-  bool stop = false; // Stop flag for thread pool
+ private:
+  queue<function<void()>> task_queue;  // FIFO queue for tasks
+  stack<function<void()>> task_stack;  // LIFO stack for tasks
+  mutex task_mutex;                    // Mutex for tasks
+  condition_variable cond;  // Condition variable for synchronization
+  bool stop = false;        // Stop flag for thread pool
 
-public:
+ public:
   /**
    * @brief This function is used to clear the matrix
    *
    * @param dst The matrix to be cleared
    */
-  template<typename T>
+  template <typename T>
   void clear_matrix(vector<vector<T>> &dst);
 
-  template<typename T>
+  template <typename T>
   void matrix_mul(std::vector<std::vector<T>> &matrix1,
                   std::vector<std::vector<T>> &matrix2,
-                  std::vector<std::vector<T>> &result,
-                  size_t block_size,
-                  size_t start,
-                  size_t end);
+                  std::vector<std::vector<T>> &result, size_t block_size,
+                  size_t start, size_t end);
   /**
    * @brief Performs single-threaded matrix multiplication.
    *
@@ -97,8 +95,7 @@ public:
   void single_thread_matrix_mul_double(
       std::vector<std::vector<double>> &matrix1,
       std::vector<std::vector<double>> &matrix2,
-      std::vector<std::vector<double>> &result,
-      size_t block_size);
+      std::vector<std::vector<double>> &result, size_t block_size);
   /**
    * @brief Multiplies two matrices in parallel using asynchronous tasks.
    *
@@ -188,16 +185,13 @@ public:
   void parallel_computing_simple_multithread(
       std::vector<std::vector<int>> &matrix1,
       std::vector<std::vector<int>> &matrix2,
-      std::vector<std::vector<int>> &result,
-      size_t block_size);
+      std::vector<std::vector<int>> &result, size_t block_size);
 };
-template<typename T>
+template <typename T>
 void MatrixBenchMark::matrix_mul(vector<vector<T>> &src1,
                                  vector<vector<T>> &src2,
-                                 vector<vector<T>> &dst,
-                                 size_t blockSize,
-                                 size_t start,
-                                 size_t end)
+                                 vector<vector<T>> &dst, size_t blockSize,
+                                 size_t start, size_t end)
 {
   // Perform matrix multiplication for the given block range using block ik
   // method
@@ -237,12 +231,10 @@ void MatrixBenchMark::parallel_computing_async(vector<vector<int>> &src1,
   for (size_t i = 0; i < src1.size(); i += blockSize)
   {
     // Launch async task for each block
-    futures.push_back(async(
-        launch::async,
-        [this, &src1, &src2, &dst, blockSize, i]()
-        {
-          this->matrix_mul(
-              src1, src2, dst, blockSize, i, min(i + blockSize, src1.size()));
+    futures.push_back(
+        async(launch::async, [this, &src1, &src2, &dst, blockSize, i]() {
+          this->matrix_mul(src1, src2, dst, blockSize, i,
+                           min(i + blockSize, src1.size()));
         }));
 
     // If we have launched as many tasks as threads, wait for some to complete
@@ -339,16 +331,10 @@ void MatrixBenchMark::parallel_computing_fifo(vector<vector<int>> &src1,
   for (size_t i = 0; i < src1.size(); i += block_size)
   {
     lock_guard<mutex> lock(task_mutex);
-    task_queue.push(
-        [this, &src1, &src2, &dst, block_size, i]
-        {
-          this->matrix_mul(src1,
-                           src2,
-                           dst,
-                           block_size,
-                           i,
-                           min(i + block_size, src1.size()));
-        });
+    task_queue.push([this, &src1, &src2, &dst, block_size, i] {
+      this->matrix_mul(src1, src2, dst, block_size, i,
+                       min(i + block_size, src1.size()));
+    });
   }
 
   {
@@ -389,16 +375,10 @@ void MatrixBenchMark::parallel_computing_lifo(vector<vector<int>> &src1,
   for (size_t i = 0; i < src1.size(); i += block_size)
   {
     lock_guard<mutex> lock(task_mutex);
-    task_stack.push(
-        [this, &src1, &src2, &dst, block_size, i]
-        {
-          this->matrix_mul(src1,
-                           src2,
-                           dst,
-                           block_size,
-                           i,
-                           min(i + block_size, src1.size()));
-        });
+    task_stack.push([this, &src1, &src2, &dst, block_size, i] {
+      this->matrix_mul(src1, src2, dst, block_size, i,
+                       min(i + block_size, src1.size()));
+    });
   }
 
   {
@@ -425,23 +405,21 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
 {
   // Use TBB parallel_for to parallelize the computation along the 'i'
   // dimension
-  tbb::affinity_partitioner ap; // Helps maintain cache locality
+  tbb::affinity_partitioner ap;  // Helps maintain cache locality
 
   tbb::parallel_for(
       tbb::blocked_range<size_t>(0, src1.size(), blockSize),
-      [&](const tbb::blocked_range<size_t> &range)
-      {
+      [&](const tbb::blocked_range<size_t> &range) {
         // Each thread handles a block in the 'i' dimension
         matrix_mul(src1, src2, dst, blockSize, range.begin(), range.end());
       },
-      ap); // Use affinity_partitioner to improve thread locality
+      ap);  // Use affinity_partitioner to improve thread locality
 }
 
 void MatrixBenchMark::parallel_computing_simple_multithread(
     std::vector<std::vector<int>> &matrix1,
     std::vector<std::vector<int>> &matrix2,
-    std::vector<std::vector<int>> &result,
-    size_t block_size)
+    std::vector<std::vector<int>> &result, size_t block_size)
 {
   // Vector to store threads
   vector<thread> threads;
@@ -450,14 +428,9 @@ void MatrixBenchMark::parallel_computing_simple_multithread(
   for (size_t i = 0; i < matrix1.size(); i += block_size)
   {
     // Launch a thread for each block
-    threads.push_back(thread(
-        [this, &matrix1, &matrix2, &result, block_size, i]()
-        {
-          this->matrix_mul(matrix1,
-                           matrix2,
-                           result,
-                           block_size,
-                           i,
+    threads.push_back(
+        thread([this, &matrix1, &matrix2, &result, block_size, i]() {
+          this->matrix_mul(matrix1, matrix2, result, block_size, i,
                            min(i + block_size, matrix1.size()));
         }));
   }
@@ -472,7 +445,7 @@ void MatrixBenchMark::parallel_computing_simple_multithread(
   threads.clear();
 }
 
-template<typename T>
+template <typename T>
 void MatrixBenchMark::clear_matrix(vector<vector<T>> &dst)
 {
   for (auto &row : dst)
@@ -490,10 +463,8 @@ void MatrixBenchMark::single_thread_matrix_mul(vector<vector<int>> &matrix1,
 }
 
 void MatrixBenchMark::single_thread_matrix_mul_double(
-    vector<vector<double>> &matrix1,
-    vector<vector<double>> &matrix2,
-    vector<vector<double>> &result,
-    size_t block_size)
+    vector<vector<double>> &matrix1, vector<vector<double>> &matrix2,
+    vector<vector<double>> &result, size_t block_size)
 {
   matrix_mul(matrix1, matrix2, result, block_size, 0, matrix1.size());
 }
@@ -503,9 +474,7 @@ void MatrixBenchMark::parallel_computing_openmp(vector<vector<int>> &src1,
                                                 vector<vector<int>> &dst,
                                                 size_t blockSize)
 {
-  // Clear the destination matrix before starting the multiplication
   clear_matrix(dst);
-  // Perform matrix multiplication using OpenMP
 #pragma omp parallel for collapse(2)
   for (size_t iblock = 0; iblock < src1.size(); iblock += blockSize)
   {
@@ -515,15 +484,17 @@ void MatrixBenchMark::parallel_computing_openmp(vector<vector<int>> &src1,
       {
         for (size_t i = iblock; i < min(iblock + blockSize, src1.size()); i++)
         {
-          for (size_t k = kblock; k < min(kblock + blockSize, src2.size());
-               k++)
+          for (size_t j = jblock; j < min(jblock + blockSize, dst[0].size());
+               j++)
           {
-            for (size_t j = jblock;
-                 j < min(jblock + blockSize, dst[0].size());
-                 j++)
+            int sum = 0;
+            for (size_t k = kblock; k < min(kblock + blockSize, src2.size());
+                 k++)
             {
-              dst[i][j] += src1[i][k] * src2[k][j];
+              sum += src1[i][k] * src2[k][j];
             }
+#pragma omp atomic
+            dst[i][j] += sum;
           }
         }
       }
@@ -531,4 +502,4 @@ void MatrixBenchMark::parallel_computing_openmp(vector<vector<int>> &src1,
   }
 }
 
-#endif // PARALLEL_MATRIX_MUL_H
+#endif  // PARALLEL_MATRIX_MUL_H
