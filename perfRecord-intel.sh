@@ -5,7 +5,7 @@ make clean
 mkdir Results_Intel
 make -j$(nproc) >/dev/null
 
-# Collect all the events we want to monitor (Intel compatible)
+# Collect all the events we want to monitor (AMD compatible)
 events="task-clock,context-switches,cpu-migrations,page-faults,instructions,cycles,\
 stalled-cycles-frontend,branches,branch-misses,L1-dcache-load-misses,cpu/event=0x76,\
 umask=0x01,name=backend_bound/,sched:sched_wakeup,sched:sched_wakeup_new"
@@ -16,7 +16,7 @@ run_perf() {
   cmd=$2
   timestamp=$(date +"%Y%m%d%H%M%S") # 每次运行生成不同时间戳
   echo "Running $name test..."
-  sudo perf stat -e $events -- $cmd 2>Results_Intel/perfStats_${name}_$timestamp.txt
+  sudo perf stat -r 10 -e $events -- $cmd 2>&1 | tee Results_Intel/perfStats_${name}_$timestamp.txt
 }
 
 # Run perf on all approaches
@@ -34,7 +34,8 @@ run_perf "openMP" ./matrix_mul_openmp
 echo "Validating the Results_Intel"
 for variant in async fifo lifo tbb standard openBLAS openMP; do
   if [ "$variant" != "openBLAS" ]; then
-    diff -u <(sort matrix_mul_single.txt) <(sort parallel_matrix_mul_${variant}.txt) | grep -E "^[+|-]" | grep -v "+++" >Results_Intel/diff_parallel_${variant}_$(date +"%Y%m%d%H%M%S").txt
+    diff -u <(sort matrix_mul_single.txt) <(sort parallel_matrix_mul_${variant}.txt) |
+      grep -E "^[+|-]" | grep -v "+++" >Results_Intel/diff_parallel_${variant}_$(date +"%Y%m%d%H%M%S").txt
     if [ $(wc -c <Results_Intel/diff_parallel_${variant}_*.txt) -eq 0 ]; then
       echo -e "\e[32mValidation Passed for $variant\e[0m"
       rm -rf Results_Intel/diff_parallel_${variant}_*.txt
@@ -42,7 +43,8 @@ for variant in async fifo lifo tbb standard openBLAS openMP; do
       echo -e "\e[31mValidation Failed for $variant\e[0m"
     fi
   else
-    diff -u <(sort matrix_mul_double.txt) <(sort parallel_matrix_mul_${variant}.txt) | grep -E "^[+|-]" | grep -v "+++" >Results_Intel/diff_${variant}_$(date +"%Y%m%d%H%M%S").txt
+    diff -u <(sort matrix_mul_double.txt) <(sort parallel_matrix_mul_${variant}.txt) |
+      grep -E "^[+|-]" | grep -v "+++" >Results_Intel/diff_${variant}_$(date +"%Y%m%d%H%M%S").txt
     if [ $(wc -c <Results_Intel/diff_${variant}_*.txt) -eq 0 ]; then
       echo -e "\e[32mValidation Passed for $variant\e[0m"
       rm -rf Results_Intel/diff_${variant}_*.txt
