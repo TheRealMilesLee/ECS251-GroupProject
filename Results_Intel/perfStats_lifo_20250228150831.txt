@@ -1,0 +1,23 @@
+
+ Performance counter stats for './matrix_mul_lifo':
+
+          53031.11 msec task-clock                       #    5.981 CPUs utilized             
+             10368      context-switches                 #  195.508 /sec                      
+                83      cpu-migrations                   #    1.565 /sec                      
+             49843      page-faults                      #  939.882 /sec                      
+      229063460709      instructions                     #    1.45  insn per cycle              (83.35%)
+      158254162126      cycles                           #    2.984 GHz                         (83.34%)
+   <not supported>      stalled-cycles-frontend                                               
+       13532569211      branches                         #  255.182 M/sec                       (83.35%)
+          14616414      branch-misses                    #    0.11% of all branches             (83.34%)
+        5963385925      L1-dcache-load-misses                                                   (83.33%)
+                 0      backend_bound                    #    0.000 /sec                        (66.65%)
+              6016      sched:sched_wakeup               #  113.443 /sec                      
+                15      sched:sched_wakeup_new           #    0.283 /sec                      
+
+       8.866557468 seconds time elapsed
+
+      52.221822000 seconds user
+       0.778062000 seconds sys
+
+

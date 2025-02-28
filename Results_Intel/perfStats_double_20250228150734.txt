@@ -1,0 +1,23 @@
+
+ Performance counter stats for './matrix_mul_double':
+
+          38853.31 msec task-clock                       #    1.017 CPUs utilized             
+               389      context-switches                 #   10.012 /sec                      
+                37      cpu-migrations                   #    0.952 /sec                      
+             98857      page-faults                      #    2.544 K/sec                     
+      303367150857      instructions                     #    2.28  insn per cycle              (83.33%)
+      133292749830      cycles                           #    3.431 GHz                         (83.33%)
+   <not supported>      stalled-cycles-frontend                                               
+       32319308133      branches                         #  831.829 M/sec                       (83.33%)
+          65775803      branch-misses                    #    0.20% of all branches             (83.34%)
+        9884147668      L1-dcache-load-misses                                                   (83.34%)
+                 0      backend_bound                    #    0.000 /sec                        (66.66%)
+               309      sched:sched_wakeup               #    7.953 /sec                      
+                 7      sched:sched_wakeup_new           #    0.180 /sec                      
+
+      38.191832050 seconds time elapsed
+
+      37.908647000 seconds user
+       0.943841000 seconds sys
+
+

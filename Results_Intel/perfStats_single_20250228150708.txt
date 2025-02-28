@@ -1,0 +1,23 @@
+
+ Performance counter stats for './matrix_mul_single':
+
+          26852.11 msec task-clock                       #    1.023 CPUs utilized             
+               682      context-switches                 #   25.398 /sec                      
+                44      cpu-migrations                   #    1.639 /sec                      
+             50093      page-faults                      #    1.866 K/sec                     
+      227616710548      instructions                     #    2.47  insn per cycle              (83.34%)
+       92114296246      cycles                           #    3.430 GHz                         (83.35%)
+   <not supported>      stalled-cycles-frontend                                               
+       13467876183      branches                         #  501.557 M/sec                       (83.33%)
+           9354388      branch-misses                    #    0.07% of all branches             (83.33%)
+        5871328239      L1-dcache-load-misses                                                   (83.33%)
+                 0      backend_bound                    #    0.000 /sec                        (66.67%)
+               364      sched:sched_wakeup               #   13.556 /sec                      
+                 7      sched:sched_wakeup_new           #    0.261 /sec                      
+
+      26.252758421 seconds time elapsed
+
+      26.176003000 seconds user
+       0.675845000 seconds sys
+
+

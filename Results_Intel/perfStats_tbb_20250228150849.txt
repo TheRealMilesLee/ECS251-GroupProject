@@ -1,0 +1,23 @@
+
+ Performance counter stats for './matrix_mul_tbb':
+
+         714339.73 msec task-clock                       #    7.148 CPUs utilized             
+            135471      context-switches                 #  189.645 /sec                      
+              1191      cpu-migrations                   #    1.667 /sec                      
+            525362      page-faults                      #  735.451 /sec                      
+      506255563500      instructions                     #    0.22  insn per cycle              (83.34%)
+     2287693007554      cycles                           #    3.203 GHz                         (83.33%)
+   <not supported>      stalled-cycles-frontend                                               
+       38832826288      branches                         #   54.362 M/sec                       (83.33%)
+          57778902      branch-misses                    #    0.15% of all branches             (83.33%)
+      117516334772      L1-dcache-load-misses                                                   (83.33%)
+                 0      backend_bound                    #    0.000 /sec                        (66.68%)
+             81170      sched:sched_wakeup               #  113.629 /sec                      
+                14      sched:sched_wakeup_new           #    0.020 /sec                      
+
+      99.928772942 seconds time elapsed
+
+     709.663071000 seconds user
+       3.994476000 seconds sys
+
+

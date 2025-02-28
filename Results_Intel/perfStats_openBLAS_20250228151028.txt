@@ -1,0 +1,23 @@
+
+ Performance counter stats for './matrix_mul_blas':
+
+          25341.54 msec task-clock                       #    1.841 CPUs utilized             
+              3450      context-switches                 #  136.140 /sec                      
+                53      cpu-migrations                   #    2.091 /sec                      
+            102918      page-faults                      #    4.061 K/sec                     
+      100492642314      instructions                     #    1.29  insn per cycle              (83.32%)
+       77860897595      cycles                           #    3.072 GHz                         (83.34%)
+   <not supported>      stalled-cycles-frontend                                               
+       13518799097      branches                         #  533.464 M/sec                       (83.35%)
+          63554660      branch-misses                    #    0.47% of all branches             (83.32%)
+        3119651310      L1-dcache-load-misses                                                   (83.33%)
+                 0      backend_bound                    #    0.000 /sec                        (66.67%)
+              2237      sched:sched_wakeup               #   88.274 /sec                      
+                 7      sched:sched_wakeup_new           #    0.276 /sec                      
+
+      13.767998702 seconds time elapsed
+
+      23.374125000 seconds user
+       1.950502000 seconds sys
+
+
