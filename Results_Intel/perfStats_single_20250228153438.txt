@@ -1,0 +1,46 @@
+Matrix multiplication time with single thread: 24.0998 seconds or 99783 microseconds
+Matrix multiplication time with single thread: 24.6389 seconds or 638862 microseconds
+Matrix multiplication time with single thread: 23.2816 seconds or 281623 microseconds
+Matrix multiplication time with single thread: 23.2037 seconds or 203660 microseconds
+Matrix multiplication time with single thread: 23.105 seconds or 105004 microseconds
+Matrix multiplication time with single thread: 23.0745 seconds or 74538 microseconds
+Matrix multiplication time with single thread: 23.1345 seconds or 134506 microseconds
+Matrix multiplication time with single thread: 23.117 seconds or 117037 microseconds
+Matrix multiplication time with single thread: 23.06 seconds or 60029 microseconds
+Matrix multiplication time with single thread: 23.063 seconds or 63008 microseconds
+
+ Performance counter stats for './matrix_mul_single' (10 runs):
+
+       25079612468 ns   duration_time                                                           ( +-  0.68% )
+       25361945463 ns   user_time                                                               ( +-  0.43% )
+         647735031 ns   system_time                                                             ( +-  0.82% )
+      227430892355      instructions                     #    2.55  insn per cycle              ( +-  0.04% )  (41.69%)
+       13456714238      branch-instructions                                                     ( +-  0.08% )  (41.68%)
+           9520993      branch-misses                    #    0.07% of all branches             ( +-  2.64% )  (41.67%)
+        5724147592      cache-references                                                        ( +-  4.79% )  (41.65%)
+         169082785      cache-misses                     #    2.95% of all cache refs           ( +-  2.12% )  (41.64%)
+       89326411990      cpu-cycles                                                              ( +-  0.47% )  (33.32%)
+       68182265610      ref-cycles                                                              ( +-  0.61% )  (41.68%)
+        9793463958      topdown-fetch-bubbles                                                   ( +-  2.66% )  (41.68%)
+         531140164      topdown-recovery-bubbles                                                ( +-  5.57% )  (41.72%)
+      219092496981      topdown-slots-issued                                                    ( +-  0.04% )  (41.73%)
+      218571031435      topdown-slots-retired                                                   ( +-  0.03% )  (41.72%)
+      178685425326      topdown-total-slots                                                     ( +-  0.47% )  (33.36%)
+   <not supported>      cstate_core/c3-residency/                                             
+   <not supported>      cstate_core/c6-residency/                                             
+   <not supported>      cstate_core/c7-residency/                                             
+   <not supported>      cstate_pkg/c2-residency/                                              
+   <not supported>      cstate_pkg/c3-residency/                                              
+   <not supported>      cstate_pkg/c6-residency/                                              
+   <not supported>      cstate_pkg/c7-residency/                                              
+   <not supported>      cstate_pkg/c8-residency/                                              
+   <not supported>      cstate_pkg/c9-residency/                                              
+   <not supported>      cstate_pkg/c10-residency/                                             
+   <not supported> Joules power/energy-cores/                                                   
+   <not supported> Joules power/energy-pkg/                                                     
+   <not supported> Joules power/energy-ram/                                                     
+   <not supported> MiB  uncore_imc/data_reads/                                                
+   <not supported> MiB  uncore_imc/data_writes/                                               
+
+            25.080 +- 0.170 seconds time elapsed  ( +-  0.68% )
+
