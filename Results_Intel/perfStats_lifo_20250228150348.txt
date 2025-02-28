@@ -1,0 +1,9 @@
+event syntax error: '..oad-misses,L2-dcache-load-misses,L3-dcache-load-misses,sched:sched_wakeup,sched:sched_wakeup_new'
+                                  \___ Bad event name
+
+Unable to find event on a PMU of 'L2-dcache-load-misses'
+Run 'perf list' for a list of valid events
+
+ Usage: perf stat [<options>] [<command>]
+
+    -e, --event <event>   event selector. use 'perf list' to list available events
