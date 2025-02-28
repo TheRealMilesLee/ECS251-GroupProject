@@ -6,7 +6,9 @@ mkdir Results_Intel
 make -j$(nproc) >/dev/null
 
 # Collect all the events we want to monitor (Intel compatible)
-events="task-clock,context-switches,cpu-migrations,page-faults,instructions,cycles,stalled-cycles-frontend,stalled-cycles-backend,branches,branch-misses,L1-dcache-load-misses,L2-dcache-load-misses,L3-dcache-load-misses,sched:sched_wakeup,sched:sched_wakeup_new"
+events="task-clock,context-switches,cpu-migrations,page-faults,instructions,cycles,\
+stalled-cycles-frontend,branches,branch-misses,L1-dcache-load-misses,cpu/event=0x76,\
+umask=0x01,name=backend_bound/,sched:sched_wakeup,sched:sched_wakeup_new"
 
 # custom perf command
 run_perf() {
