@@ -1,0 +1,30 @@
+Matrix multiplication time with TBB: 5.61431 seconds or 614311 microseconds
+Matrix multiplication time with TBB: 5.58472 seconds or 584725 microseconds
+Matrix multiplication time with TBB: 5.65014 seconds or 650136 microseconds
+Matrix multiplication time with TBB: 5.61981 seconds or 619814 microseconds
+Matrix multiplication time with TBB: 5.61817 seconds or 618174 microseconds
+Matrix multiplication time with TBB: 5.61476 seconds or 614764 microseconds
+Matrix multiplication time with TBB: 5.69047 seconds or 690470 microseconds
+Matrix multiplication time with TBB: 5.59173 seconds or 591733 microseconds
+Matrix multiplication time with TBB: 5.65456 seconds or 654559 microseconds
+Matrix multiplication time with TBB: 5.60437 seconds or 604367 microseconds
+
+ Performance counter stats for './matrix_mul_tbb' (10 runs):
+
+         156162.60 msec task-clock                       #   24.191 CPUs utilized               ( +-  0.16% )
+              5402      context-switches                 #   34.592 /sec                        ( +-  7.08% )
+               229      cpu-migrations                   #    1.466 /sec                        ( +-  5.55% )
+            577852      page-faults                      #    3.700 K/sec                       ( +-  0.00% )
+      517855286873      instructions                     #    0.70  insn per cycle            
+                                                  #    0.03  stalled cycles per insn     ( +-  0.02% )  (71.43%)
+      743500188863      cycles                           #    4.761 GHz                         ( +-  0.17% )  (71.43%)
+       17077752406      stalled-cycles-frontend          #    2.30% frontend cycles idle        ( +-  1.89% )  (71.43%)
+       41776029425      branches                         #  267.516 M/sec                       ( +-  0.08% )  (71.42%)
+         491287058      branch-misses                    #    1.18% of all branches             ( +-  0.24% )  (71.43%)
+       99621216200      L1-dcache-load-misses                                                   ( +-  0.01% )  (71.44%)
+      743486872310      backend_bound                    #    4.761 G/sec                       ( +-  0.17% )  (71.44%)
+              1151      sched:sched_wakeup               #    7.371 /sec                        ( +-  5.46% )
+                94      sched:sched_wakeup_new           #    0.602 /sec                      
+
+            6.4554 +- 0.0131 seconds time elapsed  ( +-  0.20% )
+
