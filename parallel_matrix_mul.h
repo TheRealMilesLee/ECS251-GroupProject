@@ -423,33 +423,26 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
                                              vector<vector<int>> &dst,
                                              size_t blockSize)
 {
-  size_t start = 0;
-  size_t end = src1.size();
+  size_t n = src1.size(), m = src2[0].size(), p = src1[0].size();
   parallel_for(
-      tbb::blocked_range<size_t>(start, end, blockSize),
+      tbb::blocked_range<size_t>(0, n, blockSize),
       [&](const tbb::blocked_range<size_t> &iblock_range)
       {
-        vector<vector<double>> local_dst(
-            dst.size(), vector<double>(dst[0].size(), 0.0)); // 线程私有
+        vector<vector<double>> local_dst(n,
+                                         vector<double>(m, 0.0)); // 线程私有
         for (size_t iblock = iblock_range.begin();
              iblock < iblock_range.end();
              iblock += blockSize)
         {
-          for (size_t kblock = 0; kblock < src2.size(); kblock += blockSize)
+          for (size_t kblock = 0; kblock < p; kblock += blockSize)
           {
-            for (size_t jblock = 0; jblock < dst.size(); jblock += blockSize)
+            for (size_t jblock = 0; jblock < m; jblock += blockSize)
             {
-              for (size_t i = iblock;
-                   i < min(iblock + blockSize, src1.size());
-                   i++)
+              for (size_t i = iblock; i < min(iblock + blockSize, n); i++)
               {
-                for (size_t k = kblock;
-                     k < min(kblock + blockSize, src2.size());
-                     k++)
+                for (size_t k = kblock; k < min(kblock + blockSize, p); k++)
                 {
-                  for (size_t j = jblock;
-                       j < min(jblock + blockSize, dst.size());
-                       j++)
+                  for (size_t j = jblock; j < min(jblock + blockSize, m); j++)
                   {
                     local_dst[i][j] += src1[i][k] * src2[k][j];
                   }
@@ -458,9 +451,9 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
             }
           }
         }
-        for (size_t i = start; i < end; i++)
+        for (size_t i = iblock_range.begin(); i < iblock_range.end(); i++)
         {
-          for (size_t j = 0; j < dst[0].size(); j++)
+          for (size_t j = 0; j < m; j++)
           {
             dst[i][j] += local_dst[i][j];
           }
