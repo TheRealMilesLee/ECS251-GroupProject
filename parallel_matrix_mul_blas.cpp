@@ -3,13 +3,12 @@
 using namespace std;
 int main(int argc, char **argv)
 {
-  if (argc < 2) {
+  if (argc < 2)
+  {
     cerr << "Usage: " << argv[0] << " <matrix_size>" << endl;
     return 1;
   }
-
-  // Default values
-  size_t n = atoi(argv[1]);
+  size_t matrix_size = static_cast<size_t>(atoi(argv[1]));
 
   // Initialize matrices with size n x n
   std::vector<double> src1(n * n);

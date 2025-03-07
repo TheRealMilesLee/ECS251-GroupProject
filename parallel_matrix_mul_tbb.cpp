@@ -2,8 +2,12 @@
 using namespace std;
 int main(int argc, char **argv)
 {
-  // Default values
-  size_t matrix_size = atoi(argv[1]);
+  if (argc < 2)
+  {
+    cerr << "Usage: " << argv[0] << " <matrix_size>" << endl;
+    return 1;
+  }
+  size_t matrix_size = static_cast<size_t>(atoi(argv[1]));
   size_t block_size = 128;
   MatrixBenchMark matrixBenchMark;
 
