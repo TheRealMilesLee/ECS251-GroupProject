@@ -1,5 +1,5 @@
-event syntax error: '..,user_time,system_time,'
-                                  \___ Unrecognized input
+event syntax error: 'task-clock,'
+                     \___ Unrecognized input
 Run 'perf list' for a list of valid events
 
  Usage: perf stat [<options>] [<command>]
