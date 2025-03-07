@@ -1,0 +1,30 @@
+./matrix_mul_lifo: Segmentation fault
+./matrix_mul_lifo: Segmentation fault
+./matrix_mul_lifo: Segmentation fault
+./matrix_mul_lifo: Segmentation fault
+./matrix_mul_lifo: Segmentation fault
+./matrix_mul_lifo: Segmentation fault
+./matrix_mul_lifo: Segmentation fault
+./matrix_mul_lifo: Segmentation fault
+./matrix_mul_lifo: Segmentation fault
+./matrix_mul_lifo: Segmentation fault
+
+ Performance counter stats for './matrix_mul_lifo' (10 runs):
+
+            108.47 msec task-clock                       #    1.489 CPUs utilized               ( +-  0.88% )
+                57      context-switches                 #  525.491 /sec                        ( +-  3.76% )
+                 2      cpu-migrations                   #   18.438 /sec                        ( +- 33.71% )
+             1,080      page-faults                      #    9.957 K/sec                       ( +-  0.03% )
+       358,215,259      instructions                     #    0.75  insn per cycle            
+                                                  #    0.74  stalled cycles per insn     ( +-  0.71% )  (96.69%)
+       480,285,057      cycles                           #    4.428 GHz                         ( +-  0.75% )  (86.62%)
+       265,982,355      stalled-cycles-frontend          #   55.38% frontend cycles idle        ( +-  2.83% )  (63.69%)
+        71,195,186      branches                         #  656.359 M/sec                       ( +-  2.48% )  (39.19%)
+         9,018,676      branch-misses                    #   12.67% of all branches             ( +-  1.13% )  (42.13%)
+         1,203,484      L1-dcache-load-misses                                                   ( +-  4.59% )  (96.67%)
+       443,193,617      backend_bound                    #    4.086 G/sec                       ( +-  1.74% )  (97.77%)
+                 4      sched:sched_wakeup               #   36.877 /sec                        ( +- 38.81% )
+                47      sched:sched_wakeup_new           #  433.300 /sec                      
+
+          0.072863 +- 0.000404 seconds time elapsed  ( +-  0.55% )
+

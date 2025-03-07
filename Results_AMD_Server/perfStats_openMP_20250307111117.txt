@@ -1,0 +1,30 @@
+./matrix_mul_openmp: Segmentation fault
+./matrix_mul_openmp: Segmentation fault
+./matrix_mul_openmp: Segmentation fault
+./matrix_mul_openmp: Segmentation fault
+./matrix_mul_openmp: Segmentation fault
+./matrix_mul_openmp: Segmentation fault
+./matrix_mul_openmp: Segmentation fault
+./matrix_mul_openmp: Segmentation fault
+./matrix_mul_openmp: Segmentation fault
+./matrix_mul_openmp: Segmentation fault
+
+ Performance counter stats for './matrix_mul_openmp' (10 runs):
+
+            113.85 msec task-clock                       #    1.552 CPUs utilized               ( +-  2.39% )
+                56      context-switches                 #  491.877 /sec                        ( +-  3.15% )
+                 4      cpu-migrations                   #   35.134 /sec                        ( +- 16.16% )
+             1,080      page-faults                      #    9.486 K/sec                       ( +-  0.02% )
+       376,193,336      instructions                     #    0.74  insn per cycle            
+                                                  #    0.75  stalled cycles per insn     ( +-  2.62% )  (96.89%)
+       507,710,416      cycles                           #    4.459 GHz                         ( +-  2.75% )  (80.69%)
+       281,874,155      stalled-cycles-frontend          #   55.52% frontend cycles idle        ( +-  2.76% )  (51.95%)
+        73,548,864      branches                         #  646.018 M/sec                       ( +-  2.90% )  (33.36%)
+         9,560,108      branch-misses                    #   13.00% of all branches             ( +-  2.59% )  (64.29%)
+         1,188,535      L1-dcache-load-misses                                                   ( +-  4.10% )  (99.51%)
+       476,923,543      backend_bound                    #    4.189 G/sec                       ( +-  2.50% )  (98.73%)
+                 4      sched:sched_wakeup               #   35.134 /sec                        ( +- 43.69% )
+                47      sched:sched_wakeup_new           #  412.826 /sec                      
+
+          0.073344 +- 0.000470 seconds time elapsed  ( +-  0.64% )
+

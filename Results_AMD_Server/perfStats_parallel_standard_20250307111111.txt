@@ -1,0 +1,30 @@
+./parallel_matrix_mul_standard: Segmentation fault
+./parallel_matrix_mul_standard: Segmentation fault
+./parallel_matrix_mul_standard: Segmentation fault
+./parallel_matrix_mul_standard: Segmentation fault
+./parallel_matrix_mul_standard: Segmentation fault
+./parallel_matrix_mul_standard: Segmentation fault
+./parallel_matrix_mul_standard: Segmentation fault
+./parallel_matrix_mul_standard: Segmentation fault
+./parallel_matrix_mul_standard: Segmentation fault
+./parallel_matrix_mul_standard: Segmentation fault
+
+ Performance counter stats for './parallel_matrix_mul_standard' (10 runs):
+
+            105.29 msec task-clock                       #    1.467 CPUs utilized               ( +-  0.52% )
+                54      context-switches                 #  512.882 /sec                        ( +-  3.00% )
+                 3      cpu-migrations                   #   28.493 /sec                        ( +- 14.91% )
+             1,079      page-faults                      #   10.248 K/sec                       ( +-  0.03% )
+       349,736,853      instructions                     #    0.75  insn per cycle            
+                                                  #    0.72  stalled cycles per insn     ( +-  0.81% )  (93.32%)
+       468,164,306      cycles                           #    4.447 GHz                         ( +-  0.73% )  (76.25%)
+       253,313,877      stalled-cycles-frontend          #   54.11% frontend cycles idle        ( +-  2.41% )  (44.20%)
+        69,113,692      branches                         #  656.429 M/sec                       ( +-  2.10% )  (28.30%)
+         8,572,053      branch-misses                    #   12.40% of all branches             ( +-  3.32% )  (97.49%)
+         1,186,822      L1-dcache-load-misses                                                   ( +-  1.85% )  (99.06%)
+       442,302,343      backend_bound                    #    4.201 G/sec                       ( +-  0.71% )  (98.11%)
+                 2      sched:sched_wakeup               #   18.996 /sec                        ( +- 85.89% )
+                47      sched:sched_wakeup_new           #  446.397 /sec                      
+
+          0.071763 +- 0.000318 seconds time elapsed  ( +-  0.44% )
+
