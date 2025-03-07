@@ -427,7 +427,7 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
   size_t end = src1.size();
   parallel_for(
       tbb::blocked_range<size_t>(start, end, blockSize),
-      [&](const blocked_range<size_t> &iblock_range)
+      [&](const tbb::blocked_range<size_t> &iblock_range)
       {
         vector<vector<double>> local_dst(
             dst.size(), vector<double>(dst[0].size(), 0.0)); // 线程私有
