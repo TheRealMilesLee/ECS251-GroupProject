@@ -1,0 +1,19 @@
+event syntax error: 'cpu/task-clock/,'
+                     \___ Bad event or PMU
+
+Unable to find PMU or event on a PMU of 'cpu'
+
+event syntax error: 'cpu/task-clock/,'
+                         \___ unknown term 'task-clock' for pmu 'cpu'
+
+valid terms: event,pc,edge,any,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,config3,name,period,percore,metric-id
+
+event syntax error: 'cpu/task-clock/,'
+                         \___ unknown term 'task-clock' for pmu 'cpu'
+
+valid terms: event,pc,edge,any,offcore_rsp,ldlat,inv,umask,frontend,cmask,config,config1,config2,config3,name,period,percore,metric-id
+Run 'perf list' for a list of valid events
+
+ Usage: perf stat [<options>] [<command>]
+
+    -e, --event <event>   event selector. use 'perf list' to list available events
