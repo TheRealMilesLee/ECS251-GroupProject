@@ -1,0 +1,46 @@
+Matrix multiplication time with FIFO: 6.88481 seconds or 884812 microseconds
+Matrix multiplication time with FIFO: 6.97891 seconds or 978905 microseconds
+Matrix multiplication time with FIFO: 7.04886 seconds or 48864 microseconds
+Matrix multiplication time with FIFO: 6.93374 seconds or 933742 microseconds
+Matrix multiplication time with FIFO: 6.77825 seconds or 778253 microseconds
+Matrix multiplication time with FIFO: 6.95409 seconds or 954091 microseconds
+Matrix multiplication time with FIFO: 6.92061 seconds or 920614 microseconds
+Matrix multiplication time with FIFO: 6.88779 seconds or 887791 microseconds
+Matrix multiplication time with FIFO: 7.0564 seconds or 56404 microseconds
+Matrix multiplication time with FIFO: 7.00018 seconds or 183 microseconds
+
+ Performance counter stats for './matrix_mul_fifo' (10 runs):
+
+        8701641695 ns   duration_time                                                           ( +-  0.33% )
+       51832828644 ns   user_time                                                               ( +-  0.13% )
+         752250871 ns   system_time                                                             ( +-  0.38% )
+      228891160711      instructions                     #    1.44  insn per cycle              ( +-  0.01% )  (41.70%)
+       13520571540      branch-instructions                                                     ( +-  0.03% )  (41.69%)
+          11602984      branch-misses                    #    0.09% of all branches             ( +-  4.53% )  (41.65%)
+       14911724050      cache-references                                                        ( +-  0.67% )  (41.66%)
+         274372816      cache-misses                     #    1.84% of all cache refs           ( +-  0.80% )  (41.69%)
+      158647521344      cpu-cycles                                                              ( +-  0.09% )  (33.35%)
+      146348089543      ref-cycles                                                              ( +-  0.30% )  (41.67%)
+       66700310598      topdown-fetch-bubbles                                                   ( +-  0.21% )  (41.70%)
+        1176217662      topdown-recovery-bubbles                                                ( +-  1.79% )  (41.69%)
+      220839890597      topdown-slots-issued                                                    ( +-  0.02% )  (41.69%)
+      220276191093      topdown-slots-retired                                                   ( +-  0.01% )  (41.69%)
+      317193246966      topdown-total-slots                                                     ( +-  0.08% )  (33.34%)
+   <not supported>      cstate_core/c3-residency/                                             
+   <not supported>      cstate_core/c6-residency/                                             
+   <not supported>      cstate_core/c7-residency/                                             
+   <not supported>      cstate_pkg/c2-residency/                                              
+   <not supported>      cstate_pkg/c3-residency/                                              
+   <not supported>      cstate_pkg/c6-residency/                                              
+   <not supported>      cstate_pkg/c7-residency/                                              
+   <not supported>      cstate_pkg/c8-residency/                                              
+   <not supported>      cstate_pkg/c9-residency/                                              
+   <not supported>      cstate_pkg/c10-residency/                                             
+   <not supported> Joules power/energy-cores/                                                   
+   <not supported> Joules power/energy-pkg/                                                     
+   <not supported> Joules power/energy-ram/                                                     
+   <not supported> MiB  uncore_imc/data_reads/                                                
+   <not supported> MiB  uncore_imc/data_writes/                                               
+
+            8.7016 +- 0.0290 seconds time elapsed  ( +-  0.33% )
+
