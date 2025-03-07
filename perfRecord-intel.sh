@@ -8,14 +8,14 @@ for matrix_size in 1024 4096 8192; do
   make -j$(nproc) >/dev/null
 
   # Collect all the events we want to monitor (AMD compatible)
-  events="duration_time,user_time,system_time,\
-  instructions,branch-instructions,branch-misses,\
-  cache-references,cache-misses,cpu-cycles,ref-cycles,\
-  topdown-fetch-bubbles,topdown-recovery-bubbles,topdown-slots-issued,topdown-slots-retired,topdown-total-slots,\
+  events="task-clock,\
+  cpu/instructions/,cpu/branch-instructions/,cpu/branch-misses/,cpu/cache-references/,cpu/cache-misses/,cpu/cpu-cycles/,cpu/ref-cycles/,\
+  cpu/topdown-fetch-bubbles/,cpu/topdown-recovery-bubbles/,cpu/topdown-slots-issued/,cpu/topdown-slots-retired/,cpu/topdown-total-slots/,\
   cstate_core/c3-residency/,cstate_core/c6-residency/,cstate_core/c7-residency/,\
   cstate_pkg/c2-residency/,cstate_pkg/c3-residency/,cstate_pkg/c6-residency/,cstate_pkg/c7-residency/,cstate_pkg/c8-residency/,cstate_pkg/c9-residency/,cstate_pkg/c10-residency/,\
   power/energy-cores/,power/energy-pkg/,power/energy-ram/,\
-  uncore_imc/data_reads/,uncore_imc/data_writes/"
+  uncore_imc/data_reads/,uncore_imc/data_writes/,\
+  cpu/mem-loads/,cpu/mem-stores/"
 
   # custom perf command
   run_perf() {
