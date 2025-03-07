@@ -11,9 +11,7 @@ for matrix_size in 1024 4096 8192; do
   make -j$(nproc) >/dev/null
 
   # Collect all the events we want to monitor (AMD compatible)
-  events="task-clock,context-switches,cpu-migrations,page-faults,cpu/instructions/,cpu-cycles,\
-  stalled-cycles-frontend,branches,branch-misses,L1-dcache-load-misses,cpu/event=0x76,\
-  umask=0x01,name=backend_bound/,sched:sched_wakeup,sched:sched_wakeup_new"
+  events="duration_time, user_time, system_time, branch-instructions, branch-misses, cache-references, cache-misses, cpu-cycles, ref-cycles, stalled-cycles-frontend, msr/aperf/, msr/irperf/, msr/mperf/, msr/tsc/, power/energy-pkg/, ls_inef_sw_pref.all"
 
   # custom perf command
   run_perf() {
