@@ -8,7 +8,7 @@ int main(int argc, char **argv)
     cerr << "Usage: " << argv[0] << " <matrix_size>" << endl;
     return 1;
   }
-  size_t matrix_size = static_cast<size_t>(atoi(argv[1]));
+  size_t n = static_cast<size_t>(atoi(argv[1]));
 
   // Initialize matrices with size n x n
   std::vector<double> src1(n * n);
