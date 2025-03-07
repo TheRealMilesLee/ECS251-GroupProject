@@ -8,7 +8,7 @@ for matrix_size in 1024 4096 8192; do
   make -j$(nproc) >/dev/null
 
   # Collect all the events we want to monitor (AMD compatible)
-  events="task-clock,\
+  events="cpu/task-clock/,\
   cpu/instructions/,cpu/branch-instructions/,cpu/branch-misses/,cpu/cache-references/,cpu/cache-misses/,cpu/cpu-cycles/,cpu/ref-cycles/,\
   cpu/topdown-fetch-bubbles/,cpu/topdown-recovery-bubbles/,cpu/topdown-slots-issued/,cpu/topdown-slots-retired/,cpu/topdown-total-slots/,\
   cstate_core/c3-residency/,cstate_core/c6-residency/,cstate_core/c7-residency/,\
