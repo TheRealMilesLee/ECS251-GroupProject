@@ -8,12 +8,14 @@ for matrix_size in 1024 4096 8192; do
   make -j$(nproc) >/dev/null
 
   # Collect all the events we want to monitor (AMD compatible)
-  events="task-clock,instructions,branch-instructions,branch-misses,cache-references,cache-misses,cpu-cycles,ref-cycles,\
-    cstate_core/c3-residency,cstate_core/c6-residency,cstate_core/c7-residency,\
-    cstate_pkg/c2-residency,cstate_pkg/c3-residency,cstate_pkg/c6-residency,cstate_pkg/c7-residency,cstate_pkg/c8-residency,cstate_pkg/c9-residency,cstate_pkg/c10-residency,\
-    power/energy-cores,power/energy-pkg,power/energy-ram,\
-    uncore_imc/data_reads,uncore_imc/data_writes,\
-    mem-loads,mem-stores"
+  events="duration_time,user_time,system_time,\
+    instructions,branch-instructions,branch-misses,\
+    cache-references,cache-misses,cpu-cycles,ref-cycles,\
+    topdown-fetch-bubbles,topdown-recovery-bubbles,topdown-slots-issued,topdown-slots-retired,topdown-total-slots,\
+    cstate_core/c3-residency/,cstate_core/c6-residency/,cstate_core/c7-residency/,\
+    cstate_pkg/c2-residency/,cstate_pkg/c3-residency/,cstate_pkg/c6-residency/,cstate_pkg/c7-residency/,cstate_pkg/c8-residency/,cstate_pkg/c9-residency/,cstate_pkg/c10-residency/,\
+    power/energy-cores/,power/energy-pkg/,power/energy-ram/,\
+    uncore_imc/data_reads/,uncore_imc/data_writes/"
 
   # custom perf command
   run_perf() {
