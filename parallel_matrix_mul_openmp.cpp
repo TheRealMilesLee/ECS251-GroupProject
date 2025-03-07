@@ -1,10 +1,10 @@
 #include "parallel_matrix_mul.h"
 using namespace std;
 
-int main()
+int main(argc, char **argv)
 {
   // Default values
-  size_t matrix_size = 4096;
+  size_t matrix_size = atoi(argv[1]);
   size_t block_size = 128;
   MatrixBenchMark matrixBenchMark;
 

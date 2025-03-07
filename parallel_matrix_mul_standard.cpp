@@ -1,10 +1,10 @@
 #include "parallel_matrix_mul.h"
 using namespace std;
 
-int main()
+int main(argc, char **argv)
 {
   // Default values
-  size_t matrix_size = 4096;
+  size_t matrix_size = atoi(argv[1]);
   size_t block_size = 128;
   MatrixBenchMark matrixBenchMark;
 
@@ -23,8 +23,8 @@ int main()
   }
 
   auto start_time = std::chrono::high_resolution_clock::now();
-  matrixBenchMark.parallel_computing_simple_multithread(src1, src2, dst,
-                                                        block_size);
+  matrixBenchMark.parallel_computing_simple_multithread(
+      src1, src2, dst, block_size);
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
       end_time - start_time);
