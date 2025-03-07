@@ -456,12 +456,11 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
             }
           }
         }
-        // 归约阶段
         for (size_t i = start; i < end; i++)
         {
           for (size_t j = 0; j < dst[0].size(); j++)
           {
-            dst[i][j] += local_dst[i][j]; // 这里的写入是有序的
+            dst[i][j] += local_dst[i][j];
           }
         }
       });
