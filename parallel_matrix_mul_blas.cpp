@@ -1,8 +1,13 @@
 #include "parallel_matrix_mul.h"
 
 using namespace std;
-int main(argc, char **argv)
+int main(int argc, char **argv)
 {
+  if (argc < 2) {
+    cerr << "Usage: " << argv[0] << " <matrix_size>" << endl;
+    return 1;
+  }
+
   // Default values
   size_t n = atoi(argv[1]);
 
