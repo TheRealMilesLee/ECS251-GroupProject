@@ -5,7 +5,6 @@ make clean
 mkdir Results_AMD_Server
 mkdir Results_AMD_Server/1024
 mkdir Results_AMD_Server/4096
-mkdir Results_AMD_Server/8192
 make -j$(nproc) >/dev/null
 
 # Collect all the events we want to monitor (AMD compatible)
@@ -24,7 +23,7 @@ run_perf() {
 }
 
 # Run perf on all approaches for different sizes
-for size in 1024 4096 8192; do
+for size in 1024 4096; do
   run_perf "single" ./matrix_mul_single $size
   run_perf "double" ./matrix_mul_double $size
   run_perf "parallel_standard" ./parallel_matrix_mul_standard $size
@@ -38,7 +37,7 @@ done
 
 # Run test on all results
 echo "Validating the results"
-for size in 1024 4096 8192; do
+for size in 1024 4096; do
   for variant in async fifo lifo tbb standard openBLAS openMP; do
     if [ "$variant" != "openBLAS" ]; then
       diff -u <(sort matrix_mul_single_${size}.txt) <(sort parallel_matrix_mul_${variant}_${size}.txt) |
