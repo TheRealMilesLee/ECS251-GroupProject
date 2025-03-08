@@ -1,0 +1,30 @@
+Matrix multiplication time with async: 1.90118 seconds or 901184 microseconds
+Matrix multiplication time with async: 2.05248 seconds or 52480 microseconds
+Matrix multiplication time with async: 2.04586 seconds or 45856 microseconds
+Matrix multiplication time with async: 2.04929 seconds or 49289 microseconds
+Matrix multiplication time with async: 2.03121 seconds or 31207 microseconds
+Matrix multiplication time with async: 2.00735 seconds or 7350 microseconds
+Matrix multiplication time with async: 2.02142 seconds or 21421 microseconds
+Matrix multiplication time with async: 2.01591 seconds or 15908 microseconds
+Matrix multiplication time with async: 2.17693 seconds or 176933 microseconds
+Matrix multiplication time with async: 1.99605 seconds or 996046 microseconds
+
+ Performance counter stats for './matrix_mul_async 4096' (10 runs):
+
+         32,099.07 msec task-clock                       #    9.547 CPUs utilized               ( +-  0.61% )
+             3,754      context-switches                 #  116.950 /sec                        ( +-  2.98% )
+                56      cpu-migrations                   #    1.745 /sec                        ( +-  5.07% )
+            50,303      page-faults                      #    1.567 K/sec                       ( +-  0.00% )
+   233,427,763,887      instructions                     #    1.81  insn per cycle            
+                                                  #    0.01  stalled cycles per insn     ( +-  0.01% )  (71.39%)
+   129,234,952,758      cycles                           #    4.026 GHz                         ( +-  0.61% )  (71.44%)
+     2,570,346,072      stalled-cycles-frontend          #    1.99% frontend cycles idle        ( +-  0.41% )  (71.48%)
+    14,335,259,863      branches                         #  446.594 M/sec                       ( +-  0.04% )  (71.53%)
+       162,465,104      branch-misses                    #    1.13% of all branches             ( +-  0.30% )  (71.47%)
+     8,848,922,955      L1-dcache-load-misses                                                   ( +-  0.11% )  (71.39%)
+   129,232,985,464      backend_bound                    #    4.026 G/sec                       ( +-  0.61% )  (71.39%)
+             2,499      sched:sched_wakeup               #   77.853 /sec                        ( +-  1.95% )
+                47      sched:sched_wakeup_new           #    1.464 /sec                      
+
+            3.3621 +- 0.0342 seconds time elapsed  ( +-  1.02% )
+
