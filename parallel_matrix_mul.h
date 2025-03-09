@@ -424,42 +424,32 @@ void MatrixBenchMark::parallel_computing_tbb(vector<vector<int>> &src1,
                                              size_t blockSize)
 {
   size_t n = src1.size(), m = src2[0].size(), p = src1[0].size();
-  parallel_for(
-      tbb::blocked_range<size_t>(0, n, blockSize),
-      [&](const tbb::blocked_range<size_t> &iblock_range)
+
+  tbb::parallel_for(
+      tbb::blocked_range2d<size_t>(0, n, blockSize, 0, m, blockSize),
+      [&](const tbb::blocked_range2d<size_t> &range)
       {
-        vector<vector<double>> local_dst(n,
-                                         vector<double>(m, 0.0)); // 线程私有
-        for (size_t iblock = iblock_range.begin();
-             iblock < iblock_range.end();
-             iblock += blockSize)
+        size_t i_start = range.rows().begin();
+        size_t i_end = range.rows().end();
+        size_t j_start = range.cols().begin();
+        size_t j_end = range.cols().end();
+
+        for (size_t kblock = 0; kblock < p; kblock += blockSize)
         {
-          for (size_t kblock = 0; kblock < p; kblock += blockSize)
+          for (size_t i = i_start; i < i_end; i++)
           {
-            for (size_t jblock = 0; jblock < m; jblock += blockSize)
+            for (size_t k = kblock; k < min(kblock + blockSize, p); k++)
             {
-              for (size_t i = iblock; i < min(iblock + blockSize, n); i++)
+              for (size_t j = j_start; j < j_end; j++)
               {
-                for (size_t k = kblock; k < min(kblock + blockSize, p); k++)
-                {
-                  for (size_t j = jblock; j < min(jblock + blockSize, m); j++)
-                  {
-                    local_dst[i][j] += src1[i][k] * src2[k][j];
-                  }
-                }
+                dst[i][j] += src1[i][k] * src2[k][j];
               }
             }
           }
         }
-        for (size_t i = iblock_range.begin(); i < iblock_range.end(); i++)
-        {
-          for (size_t j = 0; j < m; j++)
-          {
-            dst[i][j] += local_dst[i][j];
-          }
-        }
       });
 }
+
 
 void MatrixBenchMark::parallel_computing_simple_multithread(
     std::vector<std::vector<int>> &matrix1,
