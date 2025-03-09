@@ -1,0 +1,30 @@
+Matrix multiplication time with LIFO: 0.07706 seconds or 77060 microseconds
+Matrix multiplication time with LIFO: 0.070097 seconds or 70097 microseconds
+Matrix multiplication time with LIFO: 0.068781 seconds or 68781 microseconds
+Matrix multiplication time with LIFO: 0.074246 seconds or 74246 microseconds
+Matrix multiplication time with LIFO: 0.072083 seconds or 72083 microseconds
+Matrix multiplication time with LIFO: 0.074504 seconds or 74504 microseconds
+Matrix multiplication time with LIFO: 0.069698 seconds or 69698 microseconds
+Matrix multiplication time with LIFO: 0.067327 seconds or 67327 microseconds
+Matrix multiplication time with LIFO: 0.074558 seconds or 74558 microseconds
+Matrix multiplication time with LIFO: 0.072097 seconds or 72097 microseconds
+
+ Performance counter stats for './matrix_mul_lifo 1024' (10 runs):
+
+          1,412.04 msec task-clock                       #    9.232 CPUs utilized               ( +-  0.05% )
+               259      context-switches                 #  183.422 /sec                        ( +-  3.57% )
+                17      cpu-migrations                   #   12.039 /sec                        ( +-  6.67% )
+             3,935      page-faults                      #    2.787 K/sec                       ( +-  0.02% )
+     7,212,310,427      instructions                     #    1.22  insn per cycle            
+                                                  #    0.17  stalled cycles per insn     ( +-  1.17% )  (71.88%)
+     5,895,708,494      cycles                           #    4.175 GHz                         ( +-  0.19% )  (72.55%)
+     1,257,865,033      stalled-cycles-frontend          #   21.34% frontend cycles idle        ( +-  1.19% )  (72.50%)
+     1,048,833,167      branches                         #  742.778 M/sec                       ( +-  0.17% )  (72.08%)
+        96,346,310      branch-misses                    #    9.19% of all branches             ( +-  0.64% )  (70.98%)
+       169,075,994      L1-dcache-load-misses                                                   ( +-  2.98% )  (70.34%)
+     5,859,949,468      backend_bound                    #    4.150 G/sec                       ( +-  0.16% )  (70.71%)
+                81      sched:sched_wakeup               #   57.364 /sec                        ( +-  5.99% )
+                31      sched:sched_wakeup_new           #   21.954 /sec                      
+
+          0.152943 +- 0.000548 seconds time elapsed  ( +-  0.36% )
+

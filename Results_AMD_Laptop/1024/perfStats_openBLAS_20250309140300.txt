@@ -1,0 +1,30 @@
+Matrix multiplication time with BLAS: 0.007522 seconds or 7522 microseconds
+Matrix multiplication time with BLAS: 0.006283 seconds or 6283 microseconds
+Matrix multiplication time with BLAS: 0.006096 seconds or 6096 microseconds
+Matrix multiplication time with BLAS: 0.0061 seconds or 6100 microseconds
+Matrix multiplication time with BLAS: 0.006094 seconds or 6094 microseconds
+Matrix multiplication time with BLAS: 0.006107 seconds or 6107 microseconds
+Matrix multiplication time with BLAS: 0.006134 seconds or 6134 microseconds
+Matrix multiplication time with BLAS: 0.006027 seconds or 6027 microseconds
+Matrix multiplication time with BLAS: 0.006054 seconds or 6054 microseconds
+Matrix multiplication time with BLAS: 0.006402 seconds or 6402 microseconds
+
+ Performance counter stats for './matrix_mul_blas 1024' (10 runs):
+
+          1,906.83 msec task-clock                       #    6.124 CPUs utilized               ( +-  0.10% )
+               197      context-switches                 #  103.313 /sec                        ( +- 19.05% )
+                 6      cpu-migrations                   #    3.147 /sec                        ( +- 25.99% )
+             7,878      page-faults                      #    4.131 K/sec                       ( +-  0.02% )
+     9,205,294,256      instructions                     #    1.13  insn per cycle            
+                                                  #    0.21  stalled cycles per insn     ( +-  0.14% )  (71.86%)
+     8,176,879,311      cycles                           #    4.288 GHz                         ( +-  0.08% )  (71.45%)
+     1,911,260,034      stalled-cycles-frontend          #   23.37% frontend cycles idle        ( +-  0.18% )  (70.67%)
+     1,813,758,978      branches                         #  951.189 M/sec                       ( +-  0.24% )  (70.82%)
+       149,620,747      branch-misses                    #    8.25% of all branches             ( +-  0.18% )  (71.74%)
+        72,102,367      L1-dcache-load-misses                                                   ( +-  2.83% )  (71.92%)
+     8,172,371,719      backend_bound                    #    4.286 G/sec                       ( +-  0.09% )  (71.88%)
+                72      sched:sched_wakeup               #   37.759 /sec                        ( +-  8.37% )
+                15      sched:sched_wakeup_new           #    7.866 /sec                      
+
+          0.311369 +- 0.000683 seconds time elapsed  ( +-  0.22% )
+

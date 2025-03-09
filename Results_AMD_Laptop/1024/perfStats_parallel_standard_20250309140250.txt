@@ -1,0 +1,30 @@
+Matrix multiplication time with normal parallel approach: 0.078229 seconds or 78229 microseconds
+Matrix multiplication time with normal parallel approach: 0.077104 seconds or 77104 microseconds
+Matrix multiplication time with normal parallel approach: 0.083474 seconds or 83474 microseconds
+Matrix multiplication time with normal parallel approach: 0.083734 seconds or 83734 microseconds
+Matrix multiplication time with normal parallel approach: 0.084248 seconds or 84248 microseconds
+Matrix multiplication time with normal parallel approach: 0.079938 seconds or 79938 microseconds
+Matrix multiplication time with normal parallel approach: 0.086247 seconds or 86247 microseconds
+Matrix multiplication time with normal parallel approach: 0.083595 seconds or 83595 microseconds
+Matrix multiplication time with normal parallel approach: 0.083225 seconds or 83225 microseconds
+Matrix multiplication time with normal parallel approach: 0.083241 seconds or 83241 microseconds
+
+ Performance counter stats for './parallel_matrix_mul_standard 1024' (10 runs):
+
+          1,436.02 msec task-clock                       #    8.870 CPUs utilized               ( +-  0.30% )
+               189      context-switches                 #  131.614 /sec                        ( +-  4.01% )
+                11      cpu-migrations                   #    7.660 /sec                        ( +- 10.21% )
+             3,794      page-faults                      #    2.642 K/sec                       ( +-  0.01% )
+     7,390,330,946      instructions                     #    1.22  insn per cycle            
+                                                  #    0.17  stalled cycles per insn     ( +-  1.27% )  (71.28%)
+     6,040,593,622      cycles                           #    4.206 GHz                         ( +-  0.56% )  (71.45%)
+     1,273,428,662      stalled-cycles-frontend          #   21.08% frontend cycles idle        ( +-  1.00% )  (71.77%)
+     1,070,566,539      branches                         #  745.510 M/sec                       ( +-  0.35% )  (71.61%)
+       101,685,417      branch-misses                    #    9.50% of all branches             ( +-  1.23% )  (71.80%)
+       152,685,781      L1-dcache-load-misses                                                   ( +-  3.70% )  (71.65%)
+     6,014,184,854      backend_bound                    #    4.188 G/sec                       ( +-  0.51% )  (71.29%)
+                39      sched:sched_wakeup               #   27.158 /sec                        ( +- 12.83% )
+                23      sched:sched_wakeup_new           #   16.017 /sec                      
+
+           0.16190 +- 0.00119 seconds time elapsed  ( +-  0.73% )
+

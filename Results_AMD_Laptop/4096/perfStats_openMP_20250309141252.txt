@@ -1,0 +1,30 @@
+Matrix multiplication time with openMP: 6.54763 seconds or 547627 microseconds
+Matrix multiplication time with openMP: 6.5873 seconds or 587303 microseconds
+Matrix multiplication time with openMP: 6.62078 seconds or 620782 microseconds
+Matrix multiplication time with openMP: 6.58979 seconds or 589793 microseconds
+Matrix multiplication time with openMP: 6.64015 seconds or 640149 microseconds
+Matrix multiplication time with openMP: 6.64869 seconds or 648691 microseconds
+Matrix multiplication time with openMP: 6.68625 seconds or 686253 microseconds
+Matrix multiplication time with openMP: 6.5747 seconds or 574702 microseconds
+Matrix multiplication time with openMP: 6.58673 seconds or 586732 microseconds
+Matrix multiplication time with openMP: 6.5552 seconds or 555203 microseconds
+
+ Performance counter stats for './matrix_mul_openmp 4096' (10 runs):
+
+        109,059.20 msec task-clock                       #   13.716 CPUs utilized               ( +-  0.24% )
+             1,390      context-switches                 #   12.745 /sec                        ( +-  2.78% )
+                49      cpu-migrations                   #    0.449 /sec                        ( +-  4.01% )
+            50,196      page-faults                      #  460.264 /sec                        ( +-  0.00% )
+   597,601,434,644      instructions                     #    1.35  insn per cycle            
+                                                  #    0.05  stalled cycles per insn     ( +-  0.04% )  (71.43%)
+   442,929,669,790      cycles                           #    4.061 GHz                         ( +-  0.34% )  (71.43%)
+    30,097,571,823      stalled-cycles-frontend          #    6.80% frontend cycles idle        ( +-  0.34% )  (71.43%)
+    76,958,634,404      branches                         #  705.659 M/sec                       ( +-  0.09% )  (71.43%)
+       749,834,336      branch-misses                    #    0.97% of all branches             ( +-  0.10% )  (71.44%)
+    27,606,684,567      L1-dcache-load-misses                                                   ( +-  1.12% )  (71.44%)
+   442,941,333,004      backend_bound                    #    4.061 G/sec                       ( +-  0.34% )  (71.43%)
+             1,163      sched:sched_wakeup               #   10.664 /sec                        ( +-  2.72% )
+                30      sched:sched_wakeup_new           #    0.275 /sec                      
+
+            7.9514 +- 0.0469 seconds time elapsed  ( +-  0.59% )
+
