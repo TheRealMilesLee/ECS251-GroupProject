@@ -1,0 +1,46 @@
+Matrix multiplication time with single thread double precision: 0.469614 seconds or 469614 microseconds
+Matrix multiplication time with single thread double precision: 0.458991 seconds or 458991 microseconds
+Matrix multiplication time with single thread double precision: 0.461366 seconds or 461366 microseconds
+Matrix multiplication time with single thread double precision: 0.471328 seconds or 471328 microseconds
+Matrix multiplication time with single thread double precision: 0.457822 seconds or 457822 microseconds
+Matrix multiplication time with single thread double precision: 0.4769 seconds or 476900 microseconds
+Matrix multiplication time with single thread double precision: 0.465853 seconds or 465853 microseconds
+Matrix multiplication time with single thread double precision: 0.465244 seconds or 465244 microseconds
+Matrix multiplication time with single thread double precision: 0.461081 seconds or 461081 microseconds
+Matrix multiplication time with single thread double precision: 0.467026 seconds or 467026 microseconds
+
+ Performance counter stats for './matrix_mul_double 1024' (10 runs):
+
+        1110532722 ns   duration_time                                                           ( +-  0.42% )
+        1349995790 ns   user_time                                                               ( +-  0.24% )
+         419263692 ns   system_time                                                             ( +-  0.35% )
+        8376788106      instructions                     #    1.38  insn per cycle              ( +-  0.13% )  (42.19%)
+        1206309319      branch-instructions                                                     ( +-  0.09% )  (41.98%)
+           3277722      branch-misses                    #    0.27% of all branches             ( +-  1.50% )  (41.80%)
+         321671306      cache-references                                                        ( +-  5.33% )  (41.62%)
+           7135822      cache-misses                     #    2.22% of all cache refs           ( +-  1.24% )  (41.55%)
+        6062334292      cpu-cycles                                                              ( +-  0.23% )  (33.25%)
+        4753758229      ref-cycles                                                              ( +-  0.31% )  (41.86%)
+        6999608236      topdown-fetch-bubbles                                                   ( +-  0.49% )  (41.86%)
+         460436148      topdown-recovery-bubbles                                                ( +-  0.42% )  (41.90%)
+        9249476624      topdown-slots-issued                                                    ( +-  0.23% )  (42.17%)
+        8853343723      topdown-slots-retired                                                   ( +-  0.16% )  (42.47%)
+       11995622476      topdown-total-slots                                                     ( +-  0.16% )  (33.87%)
+   <not supported>      cstate_core/c3-residency/                                             
+   <not supported>      cstate_core/c6-residency/                                             
+   <not supported>      cstate_core/c7-residency/                                             
+   <not supported>      cstate_pkg/c2-residency/                                              
+   <not supported>      cstate_pkg/c3-residency/                                              
+   <not supported>      cstate_pkg/c6-residency/                                              
+   <not supported>      cstate_pkg/c7-residency/                                              
+   <not supported>      cstate_pkg/c8-residency/                                              
+   <not supported>      cstate_pkg/c9-residency/                                              
+   <not supported>      cstate_pkg/c10-residency/                                             
+   <not supported> Joules power/energy-cores/                                                   
+   <not supported> Joules power/energy-pkg/                                                     
+   <not supported> Joules power/energy-ram/                                                     
+   <not supported> MiB  uncore_imc/data_reads/                                                
+   <not supported> MiB  uncore_imc/data_writes/                                               
+
+           1.11041 +- 0.00465 seconds time elapsed  ( +-  0.42% )
+
