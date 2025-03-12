@@ -32,6 +32,21 @@ your system. You can start the benchmark by running the script:
 ```bash
 chmod +x perfRecord-amd-server.sh perfRecord-amd.sh perfRecord-intel.sh
 ```
+Then, based on your laptop platform, you can launch the test by running following
+command
+
+```bash
+./perfRecord-your-platform.sh
+```
+The amd-server option is for the AMD Threadripper series CPU and the amd option is
+for any other AMD Ryzen series CPU, the intel option is for interl core series CPU.
+Keep in mind that, different platform might have different perf support list, so if the
+script failed and said "invalid events", please run
+```bash
+perf list
+```
+to see all events that support on the current machine.
+
 ## Credit
 This project was done by Hengyi Li, Zhuosheng Liu, Michael Gunnings and Jason Yoo
 with the help of GitHub Copilot and ChatGPT for debugging. We would also like
@@ -39,7 +54,9 @@ to link the related libraries and handbooks we referenced down below.
 
 ## References
 - [Intel TBB](https://www.intel.com/content/www/us/en/developer/tools/oneapi/onetbb.html)
-- [Microsoft PPL](https://docs.microsoft.com/en-us/cpp/parallel/concrt/parallel-patterns-library-ppl)
+- [OpenBLAS](http://www.openmathlib.org/OpenBLAS/)
+- [OpenMP](https://www.openmp.org/)
+- [Microsoft PPL](https://learn.microsoft.com/en-us/cpp/parallel/concrt/parallel-patterns-library-ppl?view=msvc-170)
 - [C++ Reference](https://en.cppreference.com/w/)
 - [GitHub Copilot](https://github.com/features/copilot)
 - [ChatGPT](https://www.openai.com/research/chatgpt)
