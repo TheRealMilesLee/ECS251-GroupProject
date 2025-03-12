@@ -1,7 +1,7 @@
 # ECS251-GroupProject
 
 This project aims to perform a comparison of the performance between different
-thread pool strategies. We will compare the FIFO, LIFO, PPL, and TBB approaches. We
+thread pool strategies. We will compare the FIFO, LIFO, TBB, OpenMP and OpenBlas approaches. We
 will also compare the native and async/future approaches.
 
 The workload we will use is matrix multiplication. We will use
@@ -30,8 +30,7 @@ Before starting the benchmark, make sure you have the ```perf``` tool ready on
 your system. You can start the benchmark by running the script:
 
 ```bash
-chmod +x perfRecord.sh
-./perfRecord.sh
+chmod +x perfRecord-amd-server.sh perfRecord-amd.sh perfRecord-intel.sh
 ```
 ## Credit
 This project was done by Hengyi Li, Zhuosheng Liu, Michael Gunnings and Jason Yoo
