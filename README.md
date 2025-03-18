@@ -9,7 +9,7 @@ the block IK approach to ensure maximum performance in the algorithm side.
 
 ## Dependencies
 This project is built using clang. So make sure you have the latest clang installed
-before starting to build this project.
+before starting to build this project. Also, this project would only works in Linux platform, it would not compile on Windows or macOS platform due to the restrictions of openBlas and openMP
 
 ## Installation
 Use the following commands to clone this repository.
