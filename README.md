@@ -47,6 +47,26 @@ perf list
 ```
 to see all events that support on the current machine.
 
+## Code Structure
+Here is a ```tree``` results for this project:
+```txt
+```
+The project is organized as follows:
+
+- [DA Folder]("./DA") contains the csv and jupyter notebook file for the data analysis
+- [Results_AMD_Laptop]("./Results_AMD_Laptop") contains the results gathered from AMD laptop testbench
+- [Results_AMD_Server]("./Results_AMD_Server") contains the results gathered from AMD server testbench
+- [Results_Intel]("./Results_Intel") contains the results gathered from Intel laptop testbench
+
+All of our implementation were in the [header file]("./parallel_matrix_mul.h"). The CPP file is only for the runner.
+
+We use bash scripts to automated the test process, based on different platform, we have different scripts.
+```bash
+perfRecord-amd-server.sh # This one is for the Threadripper 7960X platform
+perfRecord-amd.sh # This one is for R7-7735HS platform
+perfRecord-intel.sh # This one is for i7-7700HQ platform
+```
+So please choose cooresponding script based on YOUR platform. Because ```perf``` would have different event in different CPUs, this might not always work. We only can promise it would work on those three specific CPUs.
 ## Credit
 This project was done by Hengyi Li, Zhuosheng Liu, Michael Gunnings and Jason Yoo
 with the help of GitHub Copilot and ChatGPT for debugging. We would also like
