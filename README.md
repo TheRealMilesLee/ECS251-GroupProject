@@ -144,10 +144,10 @@ Here is a ```tree``` results for this project:
 ```
 The project is organized as follows:
 
-- [DA Folder]("./DA") contains the csv and jupyter notebook file for the data analysis
-- [Results_AMD_Laptop]("./Results_AMD_Laptop") contains the results gathered from AMD laptop testbench
-- [Results_AMD_Server]("./Results_AMD_Server") contains the results gathered from AMD server testbench
-- [Results_Intel]("./Results_Intel") contains the results gathered from Intel laptop testbench
+- [DA Folder]("./DA/") contains the csv and jupyter notebook file for the data analysis
+- [Results_AMD_Laptop]("./Results_AMD_Laptop/") contains the results gathered from AMD laptop testbench
+- [Results_AMD_Server]("./Results_AMD_Server/") contains the results gathered from AMD server testbench
+- [Results_Intel]("./Results_Intel/") contains the results gathered from Intel laptop testbench
 
 All of our implementation were in the [header file]("./parallel_matrix_mul.h"). The CPP file is only for the runner.
 
